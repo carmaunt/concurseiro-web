@@ -8,7 +8,7 @@ Este projeto precisa de uma VPS com Node.js/Docker. Hospedagem compartilhada nã
 2. Instale Nginx e certbot, ou use o proxy reverso já fornecido pelo seu plano.
 3. Copie o projeto para `/opt/concurseiro-web`.
 4. Copie `.env.production.example` para `.env.production` e preencha os valores reais.
-5. Execute `docker compose -f compose.production.yaml up -d --build`.
+5. Execute `docker compose --env-file .env.production -f compose.production.yaml up -d --build`.
 6. Verifique `curl http://127.0.0.1:3000/api/health` antes de expor o domínio.
 
 ## Nginx
@@ -27,6 +27,6 @@ Depois que o domínio estiver emitindo HTTPS:
 ## Rollback
 
 Antes de atualizar, marque a imagem atual: `docker image tag concurseiro-web-concurseiro-web:latest concurseiro-web:rollback`.
-Se a verificação pós-deploy falhar, restaure com `docker compose -f compose.production.yaml down` e execute a imagem marcada no compose anterior. Sempre valide `/api/health`, `/api/health/dependencies`, login, uma listagem e uma página de conteúdo após qualquer atualização.
+Se a verificação pós-deploy falhar, restaure com `docker compose --env-file .env.production -f compose.production.yaml down` e execute a imagem marcada no compose anterior. Sempre valide `/api/health`, `/api/health/dependencies`, login, uma listagem e uma página de conteúdo após qualquer atualização.
 
 Use também o [CHECKLIST-RELEASE.md](CHECKLIST-RELEASE.md) antes de expor uma nova versão.

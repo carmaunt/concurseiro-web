@@ -11,7 +11,7 @@ Execute antes de cada publicação em produção.
 - [ ] `npm run typecheck`
 - [ ] `npm run build`
 - [ ] `npm audit --audit-level=high`
-- [ ] `docker compose -f compose.production.yaml build`
+- [ ] `docker compose --env-file .env.production -f compose.production.yaml build`
 
 ## Ambiente
 
