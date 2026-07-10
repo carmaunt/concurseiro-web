@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "screenshots": [
+    "01-home-feed.png",
+    "02-noticias.png",
+    "03-blog.png",
+    "04-artigo-noticia.png",
+    "05-home-mobile.png"
+  ],
+  "checkedTexts": [
+    "Concurso do TRF",
+    "Baixar app",
+    "A preparação recomendada combina leitura"
+  ]
+}

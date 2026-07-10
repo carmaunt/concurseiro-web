@@ -1,0 +1,194 @@
+"use client";
+
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { AuthLayout } from "@/components/AuthLayout";
+import { Badge } from "@/components/Badge";
+import { Button } from "@/components/Button";
+import { Card } from "@/components/Card";
+import { EmptyState } from "@/components/EmptyState";
+import { Loading } from "@/components/Loading";
+import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
+import { getApiErrorMessage, getApiErrorStatus } from "@/services/api";
+import { buscarQuestao, buscarUltimaResposta, responderQuestao } from "@/services/questoesService";
+import type { RespostaQuestao } from "@/types/questoes";
+import styles from "./resolver.module.css";
+
+export default function ResolverQuestaoPage() {
+  const params = useParams<{ idQuestion: string }>();
+  const idQuestion = params.idQuestion;
+  const [selecionada, setSelecionada] = useState<string>("");
+  const [resultado, setResultado] = useState<RespostaQuestao | null>(null);
+
+  const questaoQuery = useQuery({
+    queryKey: ["questao", idQuestion],
+    queryFn: () => buscarQuestao(idQuestion),
+    enabled: Boolean(idQuestion),
+  });
+
+  const ultimaRespostaQuery = useQuery({
+    queryKey: ["questao", idQuestion, "ultima-resposta"],
+    queryFn: () => buscarUltimaResposta(idQuestion),
+    enabled: Boolean(idQuestion),
+    retry: false,
+  });
+
+  const responderMutation = useMutation({
+    mutationFn: () => responderQuestao(idQuestion, selecionada),
+    onSuccess: (data) => setResultado(data),
+  });
+
+  const questao = questaoQuery.data;
+  const respostaAnterior = ultimaRespostaQuery.data;
+  const respostaVisivel = resultado ?? respostaAnterior ?? null;
+  const alternativas = useMemo(() => {
+    if (!questao) return [];
+    if (questao.modalidade === "CERTO_ERRADO") return alternativasCertoErrado();
+    return parseAlternativas(questao.alternativas);
+  }, [questao]);
+
+  return (
+    <AuthLayout>
+      <section className="container section">
+        <Link className={styles.backLink} href="/questoes">
+          Voltar para questões
+        </Link>
+
+        {questaoQuery.isLoading ? <Loading label="Carregando questão..." /> : null}
+
+        {questaoQuery.error ? (
+          <EmptyState
+            title="Não foi possível carregar a questão"
+            description={getApiErrorMessage(questaoQuery.error, "Tente novamente em instantes.")}
+            actionHref="/questoes"
+            actionLabel="Voltar para listagem"
+          />
+        ) : null}
+
+        {questao ? (
+          <div className={styles.layout}>
+            <article className={styles.mainColumn}>
+              <Card>
+                <div className={styles.meta}>
+                  <Badge>{questao.disciplina || "Disciplina não informada"}</Badge>
+                  <span>{questao.banca || "Banca não informada"} · {questao.ano || "Ano não informado"}</span>
+                </div>
+                <h1>{questao.idQuestion}</h1>
+                <p className={styles.catalog}>
+                  {questao.assunto || "Assunto não informado"}
+                  {questao.subassunto ? ` · ${questao.subassunto}` : ""}
+                  {questao.instituicao ? ` · ${questao.instituicao}` : ""}
+                </p>
+              </Card>
+
+              {questao.textoApoioConteudo ? (
+                <Card>
+                  <h2>{questao.textoApoioTitulo || "Texto de apoio"}</h2>
+                  <div className={styles.readingText}>
+                    {questao.textoApoioConteudo.split(/\n{2,}/).map((paragraph, index) => (
+                      <p key={index}>{paragraph}</p>
+                    ))}
+                  </div>
+                </Card>
+              ) : null}
+
+              <Card>
+                {questao.enunciado ? <p className={styles.enunciado}>{questao.enunciado}</p> : null}
+                <div className={styles.questionText}>
+                  {(questao.questao || "Questão sem texto disponível.").split(/\n{2,}/).map((paragraph, index) => (
+                    <p key={index}>{paragraph}</p>
+                  ))}
+                </div>
+              </Card>
+
+              <Card>
+                <h2>Alternativas</h2>
+                {alternativas.length === 0 ? (
+                  <EmptyState
+                    title="Alternativas indisponíveis"
+                    description="A questão veio da API sem alternativas parseáveis. Confira o cadastro no painel admin."
+                  />
+                ) : (
+                  <div className={styles.options}>
+                    {alternativas.map((alternativa) => {
+                      const isSelected = selecionada === alternativa.letra;
+                      const isCorrect = respostaVisivel?.gabarito === alternativa.letra;
+                      const isWrongSelected = respostaVisivel && respostaVisivel.respostaSelecionada === alternativa.letra && !respostaVisivel.acertou;
+
+                      return (
+                        <button
+                          key={alternativa.letra}
+                          type="button"
+                          className={[
+                            styles.option,
+                            isSelected ? styles.selected : "",
+                            isCorrect ? styles.correct : "",
+                            isWrongSelected ? styles.wrong : "",
+                          ].join(" ")}
+                          onClick={() => {
+                            if (!respostaVisivel) setSelecionada(alternativa.letra);
+                          }}
+                          disabled={Boolean(respostaVisivel)}
+                        >
+                          <strong>{alternativa.letra}</strong>
+                          <span>{alternativa.texto}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </Card>
+            </article>
+
+            <aside className={styles.sideColumn}>
+              <Card>
+                <h2>Responder</h2>
+                {respostaVisivel ? (
+                  <div className={styles.result}>
+                    <Badge>{respostaVisivel.acertou ? "Acertou" : "Errou"}</Badge>
+                    <p>
+                      Sua resposta: <strong>{respostaVisivel.respostaSelecionada}</strong>
+                    </p>
+                    <p>
+                      Gabarito: <strong>{respostaVisivel.gabarito}</strong>
+                    </p>
+                    {respostaVisivel.explicacao ? (
+                      <div className={styles.explanation}>
+                        <strong>Explicação</strong>
+                        <p>{respostaVisivel.explicacao}</p>
+                      </div>
+                    ) : null}
+                    <Button href="/questoes" variant="secondary">
+                      Resolver outra
+                    </Button>
+                  </div>
+                ) : (
+                  <div className={styles.answerBox}>
+                    <p className="muted">
+                      Escolha uma alternativa. O gabarito só será exibido após o envio.
+                    </p>
+                    {ultimaRespostaQuery.error && getApiErrorStatus(ultimaRespostaQuery.error) !== 404 ? (
+                      <p className="errorText">{getApiErrorMessage(ultimaRespostaQuery.error, "Não foi possível buscar resposta anterior.")}</p>
+                    ) : null}
+                    {responderMutation.error ? (
+                      <p className="errorText">{getApiErrorMessage(responderMutation.error, "Não foi possível enviar sua resposta.")}</p>
+                    ) : null}
+                    <Button
+                      type="button"
+                      disabled={!selecionada || responderMutation.isPending}
+                      onClick={() => responderMutation.mutate()}
+                    >
+                      {responderMutation.isPending ? "Enviando..." : "Enviar resposta"}
+                    </Button>
+                  </div>
+                )}
+              </Card>
+            </aside>
+          </div>
+        ) : null}
+      </section>
+    </AuthLayout>
+  );
+}

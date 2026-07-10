@@ -1,0 +1,140 @@
+.backLink {
+  display: inline-flex;
+  color: var(--color-primary);
+  font-weight: 800;
+  margin-bottom: 16px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+.mainColumn,
+.sideColumn {
+  display: grid;
+  gap: 16px;
+}
+
+.sideColumn {
+  position: sticky;
+  top: 96px;
+}
+
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.meta span,
+.catalog {
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+.mainColumn h1,
+.mainColumn h2,
+.sideColumn h2 {
+  color: var(--color-primary);
+  margin: 0 0 10px;
+}
+
+.readingText,
+.questionText {
+  display: grid;
+  gap: 14px;
+}
+
+.readingText p,
+.questionText p,
+.enunciado {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.enunciado {
+  color: var(--color-muted);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+
+.options {
+  display: grid;
+  gap: 10px;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 12px;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 14px;
+  text-align: left;
+}
+
+.option strong {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-active);
+  color: var(--color-primary);
+}
+
+.option:hover,
+.selected {
+  border-color: var(--color-primary-soft);
+  background: #f8fafc;
+}
+
+.correct {
+  border-color: var(--color-success);
+  background: #f0fdf4;
+}
+
+.wrong {
+  border-color: var(--color-danger);
+  background: #fff5f5;
+}
+
+.answerBox,
+.result {
+  display: grid;
+  gap: 12px;
+}
+
+.result p {
+  margin: 0;
+}
+
+.explanation {
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sideColumn {
+    position: static;
+  }
+
+  .meta {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

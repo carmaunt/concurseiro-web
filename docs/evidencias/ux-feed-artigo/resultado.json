@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "screenshots": [
+    "01-home-desktop.png",
+    "02-listagem-noticias.png",
+    "03-artigo-desktop.png",
+    "04-home-mobile.png",
+    "05-artigo-mobile.png"
+  ],
+  "checks": {
+    "trfHeadingCountOnHome": 1,
+    "lint": "ok",
+    "build": "ok"
+  }
+}

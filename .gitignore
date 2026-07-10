@@ -1,0 +1,8 @@
+.next
+node_modules
+.env*.local
+.env.production
+.env.staging
+out
+playwright-report
+test-results

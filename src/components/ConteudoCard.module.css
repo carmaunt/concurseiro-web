@@ -1,0 +1,38 @@
+.card {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  overflow: hidden;
+  padding: 0;
+}
+
+.body {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 18px;
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.meta span {
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.body h3 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 20px;
+  line-height: 1.25;
+}
+
+.body p {
+  margin: 0;
+  color: var(--color-muted);
+}

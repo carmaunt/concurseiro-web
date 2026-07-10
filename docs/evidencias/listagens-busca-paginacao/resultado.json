@@ -1,0 +1,32 @@
+[
+  {
+    "step": "noticias página 1",
+    "ok": true,
+    "url": "http://localhost:3000/noticias"
+  },
+  {
+    "step": "noticias paginação",
+    "ok": true,
+    "url": "http://localhost:3000/noticias?page=2"
+  },
+  {
+    "step": "noticias busca",
+    "ok": true,
+    "url": "http://localhost:3000/noticias?search=pol%C3%ADcia"
+  },
+  {
+    "step": "limpar busca",
+    "ok": true,
+    "url": "http://localhost:3000/noticias"
+  },
+  {
+    "step": "blog busca",
+    "ok": true,
+    "url": "http://localhost:3000/blog?search=revis%C3%A3o"
+  },
+  {
+    "step": "mobile sem resultados",
+    "ok": true,
+    "url": "http://localhost:3000/noticias?search=semresultado"
+  }
+]

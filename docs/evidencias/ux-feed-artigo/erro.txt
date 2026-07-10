@@ -1,0 +1,10 @@
+locator.waitFor: Error: strict mode violation: getByText('trf') resolved to 4 elements:
+    1) <strong>Concurso do TRF abre 120 vagas com foco em área a…</strong> aka getByLabel('Breadcrumb').getByText('Concurso do TRF abre 120')
+    2) <h1>Concurso do TRF abre 120 vagas com foco em área a…</h1> aka getByRole('heading', { name: 'Concurso do TRF abre 120' })
+    3) <span>trf</span> aka getByText('trf', { exact: true })
+    4) <title>Concurso TRF com 120 vagas | O Concurseiro</title> aka getByText('Concurso TRF com 120 vagas |')
+
+Call log:
+[2m  - waiting for getByText('trf') to be visible[22m
+
+    at [stdin]:21:31

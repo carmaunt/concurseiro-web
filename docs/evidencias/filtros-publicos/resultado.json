@@ -1,0 +1,47 @@
+[
+  {
+    "name": "listagem sem parâmetros",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias"
+  },
+  {
+    "name": "categoria na URL",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?category=concursos"
+  },
+  {
+    "name": "paginação preserva categoria",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?category=concursos&page=2"
+  },
+  {
+    "name": "categoria tag e busca combinadas",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?category=concursos&tag=policia-federal&search=pol%C3%ADcia"
+  },
+  {
+    "name": "remoção individual preserva demais filtros",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?category=concursos&search=pol%C3%ADcia"
+  },
+  {
+    "name": "limpar todos",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias"
+  },
+  {
+    "name": "estado vazio filtrado",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?category=seguranca-publica&tag=policia-federal"
+  },
+  {
+    "name": "URL compartilhável",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?search=pol%C3%ADcia&category=concursos&tag=policia-federal"
+  },
+  {
+    "name": "filtros no mobile",
+    "status": "ok",
+    "url": "http://localhost:3000/noticias?category=concursos"
+  }
+]

@@ -1,0 +1,35 @@
+FROM node:22.16.0-alpine AS base
+WORKDIR /app
+ENV NEXT_TELEMETRY_DISABLED=1
+
+FROM base AS dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
+
+FROM base AS builder
+ARG CONCURSEIRO_API_URL
+ARG NEXT_PUBLIC_WEB_URL
+ARG NEXT_PUBLIC_APP_DOWNLOAD_URL
+ARG NEXT_PUBLIC_TELEMETRY_ENABLED=false
+ARG NEXT_PUBLIC_IMAGE_HOSTNAMES=images.unsplash.com
+ARG CONCURSEIRO_DEPLOYMENT=production
+ENV CONCURSEIRO_API_URL=$CONCURSEIRO_API_URL
+ENV NEXT_PUBLIC_WEB_URL=$NEXT_PUBLIC_WEB_URL
+ENV NEXT_PUBLIC_APP_DOWNLOAD_URL=$NEXT_PUBLIC_APP_DOWNLOAD_URL
+ENV NEXT_PUBLIC_TELEMETRY_ENABLED=$NEXT_PUBLIC_TELEMETRY_ENABLED
+ENV NEXT_PUBLIC_IMAGE_HOSTNAMES=$NEXT_PUBLIC_IMAGE_HOSTNAMES
+ENV CONCURSEIRO_DEPLOYMENT=$CONCURSEIRO_DEPLOYMENT
+COPY --from=dependencies /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+FROM base AS runner
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+COPY --from=builder --chown=node:node /app/public ./public
+COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/.next/static ./.next/static
+USER node
+EXPOSE 3000
+CMD ["node", "server.js"]

@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "screenshots": [
+    "01-login.png",
+    "02-dashboard-desktop.png",
+    "03-questoes-desktop.png",
+    "04-questao-resolvida-desktop.png",
+    "05-dashboard-mobile.png"
+  ],
+  "checkedTexts": [
+    "50%",
+    "100%",
+    "0%",
+    "Direito Constitucional",
+    "Língua Portuguesa",
+    "Gabarito:"
+  ]
+}

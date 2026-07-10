@@ -1,0 +1,23 @@
+.authSection {
+  display: grid;
+  place-items: start center;
+}
+
+.authCard {
+  width: min(100%, 460px);
+}
+
+.authCard h1 {
+  margin: 0;
+  color: var(--color-primary);
+}
+
+.switchText {
+  color: var(--color-muted);
+  margin: 16px 0 0;
+}
+
+.switchText a {
+  color: var(--color-primary);
+  font-weight: 800;
+}

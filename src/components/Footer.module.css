@@ -1,0 +1,45 @@
+.footer {
+  border-top: 1px solid var(--color-border);
+  background: #fff;
+  color: var(--color-muted);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+.inner strong {
+  color: var(--color-primary);
+}
+
+.inner p {
+  margin: 4px 0 0;
+}
+
+.inner nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.inner a:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 720px) {
+  .inner {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .inner nav {
+    justify-content: flex-start;
+  }
+}
