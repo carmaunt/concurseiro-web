@@ -9,6 +9,14 @@ import { Card } from "@/components/Card";
 import { EmptyState } from "@/components/EmptyState";
 import { Loading } from "@/components/Loading";
 import { getApiErrorMessage } from "@/services/api";
+import {
+  listarAnos,
+  listarAssuntosPorDisciplina,
+  listarBancas,
+  listarDisciplinas,
+  listarInstituicoes,
+  listarSubassuntosPorAssunto,
+} from "@/services/catalogosService";
 import { listarQuestoes } from "@/services/questoesService";
 import type { QuestaoFilters } from "@/types/questoes";
 import styles from "./questoes.module.css";
@@ -17,6 +25,7 @@ const initialFilters: QuestaoFilters = {
   texto: "",
   disciplinaId: "",
   assuntoId: "",
+  subassuntoId: "",
   bancaId: "",
   instituicaoId: "",
   ano: "",
@@ -31,6 +40,24 @@ export default function QuestoesPage() {
     queryKey: ["questoes", appliedFilters, page],
     queryFn: () => listarQuestoes(appliedFilters, page, 10),
   });
+  const disciplinasQuery = useQuery({ queryKey: ["catalogo", "disciplinas"], queryFn: listarDisciplinas, staleTime: 30 * 60_000 });
+  const bancasQuery = useQuery({ queryKey: ["catalogo", "bancas"], queryFn: listarBancas, staleTime: 30 * 60_000 });
+  const instituicoesQuery = useQuery({ queryKey: ["catalogo", "instituicoes"], queryFn: listarInstituicoes, staleTime: 30 * 60_000 });
+  const anosQuery = useQuery({ queryKey: ["catalogo", "anos"], queryFn: listarAnos, staleTime: 30 * 60_000 });
+  const assuntosQuery = useQuery({
+    queryKey: ["catalogo", "assuntos", filters.disciplinaId],
+    queryFn: () => listarAssuntosPorDisciplina(filters.disciplinaId!),
+    enabled: Boolean(filters.disciplinaId),
+    staleTime: 30 * 60_000,
+  });
+  const subassuntosQuery = useQuery({
+    queryKey: ["catalogo", "subassuntos", filters.assuntoId],
+    queryFn: () => listarSubassuntosPorAssunto(filters.assuntoId!),
+    enabled: Boolean(filters.assuntoId),
+    staleTime: 30 * 60_000,
+  });
+
+  const catalogoError = disciplinasQuery.error || bancasQuery.error || instituicoesQuery.error || anosQuery.error || assuntosQuery.error || subassuntosQuery.error;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,49 +87,76 @@ export default function QuestoesPage() {
               />
             </label>
             <label className="field">
-              <span className="label">Disciplina ID</span>
-              <input
+              <span className="label">Disciplina</span>
+              <select
                 className="input"
-                inputMode="numeric"
                 value={filters.disciplinaId}
-                onChange={(event) => setFilters((current) => ({ ...current, disciplinaId: event.target.value }))}
-              />
+                disabled={disciplinasQuery.isLoading}
+                onChange={(event) => setFilters((current) => ({ ...current, disciplinaId: event.target.value, assuntoId: "", subassuntoId: "" }))}
+              >
+                <option value="">Todas as disciplinas</option>
+                {disciplinasQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
+              </select>
             </label>
             <label className="field">
-              <span className="label">Banca ID</span>
-              <input
+              <span className="label">Assunto</span>
+              <select
                 className="input"
-                inputMode="numeric"
-                value={filters.bancaId}
-                onChange={(event) => setFilters((current) => ({ ...current, bancaId: event.target.value }))}
-              />
-            </label>
-            <label className="field">
-              <span className="label">Assunto ID</span>
-              <input
-                className="input"
-                inputMode="numeric"
                 value={filters.assuntoId}
-                onChange={(event) => setFilters((current) => ({ ...current, assuntoId: event.target.value }))}
-              />
+                disabled={!filters.disciplinaId || assuntosQuery.isLoading}
+                onChange={(event) => setFilters((current) => ({ ...current, assuntoId: event.target.value, subassuntoId: "" }))}
+              >
+                <option value="">{filters.disciplinaId ? "Todos os assuntos" : "Escolha uma disciplina"}</option>
+                {assuntosQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
+              </select>
             </label>
             <label className="field">
-              <span className="label">Órgão ID</span>
-              <input
+              <span className="label">Subassunto</span>
+              <select
                 className="input"
-                inputMode="numeric"
+                value={filters.subassuntoId}
+                disabled={!filters.assuntoId || subassuntosQuery.isLoading}
+                onChange={(event) => setFilters((current) => ({ ...current, subassuntoId: event.target.value }))}
+              >
+                <option value="">{filters.assuntoId ? "Todos os subassuntos" : "Escolha um assunto"}</option>
+                {subassuntosQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span className="label">Banca</span>
+              <select
+                className="input"
+                value={filters.bancaId}
+                disabled={bancasQuery.isLoading}
+                onChange={(event) => setFilters((current) => ({ ...current, bancaId: event.target.value }))}
+              >
+                <option value="">Todas as bancas</option>
+                {bancasQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
+              </select>
+            </label>
+            <label className="field">
+              <span className="label">Órgão</span>
+              <select
+                className="input"
                 value={filters.instituicaoId}
+                disabled={instituicoesQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, instituicaoId: event.target.value }))}
-              />
+              >
+                <option value="">Todos os órgãos</option>
+                {instituicoesQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
+              </select>
             </label>
             <label className="field">
               <span className="label">Ano</span>
-              <input
+              <select
                 className="input"
-                inputMode="numeric"
                 value={filters.ano}
+                disabled={anosQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, ano: event.target.value }))}
-              />
+              >
+                <option value="">Todos os anos</option>
+                {anosQuery.data?.map((ano) => <option key={ano} value={ano}>{ano}</option>)}
+              </select>
             </label>
             <div className={styles.filterActions}>
               <Button type="submit">Filtrar</Button>
@@ -125,6 +179,7 @@ export default function QuestoesPage() {
       <section className="container section">
         {isLoading ? <Loading label="Carregando questões..." /> : null}
         {error ? <p className="errorText">{getApiErrorMessage(error, "Erro ao carregar questões.")}</p> : null}
+        {catalogoError ? <p className="errorText">Não foi possível carregar todos os filtros. Atualize a página para tentar novamente.</p> : null}
         {!isLoading && data?.content.length === 0 ? (
           <EmptyState
             title="Nenhuma questão encontrada"

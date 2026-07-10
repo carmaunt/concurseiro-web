@@ -8,11 +8,12 @@ import { AuthLayout } from "@/components/AuthLayout";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { ComentariosQuestao } from "@/components/ComentariosQuestao";
 import { EmptyState } from "@/components/EmptyState";
 import { Loading } from "@/components/Loading";
 import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
-import { getApiErrorMessage, getApiErrorStatus } from "@/services/api";
-import { buscarQuestao, buscarUltimaResposta, responderQuestao } from "@/services/questoesService";
+import { getApiErrorMessage } from "@/services/api";
+import { buscarQuestao, responderQuestao } from "@/services/questoesService";
 import type { RespostaQuestao } from "@/types/questoes";
 import styles from "./resolver.module.css";
 
@@ -21,18 +22,12 @@ export default function ResolverQuestaoPage() {
   const idQuestion = params.idQuestion;
   const [selecionada, setSelecionada] = useState<string>("");
   const [resultado, setResultado] = useState<RespostaQuestao | null>(null);
+  const [mostrarExplicacao, setMostrarExplicacao] = useState(false);
 
   const questaoQuery = useQuery({
     queryKey: ["questao", idQuestion],
     queryFn: () => buscarQuestao(idQuestion),
     enabled: Boolean(idQuestion),
-  });
-
-  const ultimaRespostaQuery = useQuery({
-    queryKey: ["questao", idQuestion, "ultima-resposta"],
-    queryFn: () => buscarUltimaResposta(idQuestion),
-    enabled: Boolean(idQuestion),
-    retry: false,
   });
 
   const responderMutation = useMutation({
@@ -41,8 +36,9 @@ export default function ResolverQuestaoPage() {
   });
 
   const questao = questaoQuery.data;
-  const respostaAnterior = ultimaRespostaQuery.data;
-  const respostaVisivel = resultado ?? respostaAnterior ?? null;
+  // O resultado é mantido somente nesta sessão da página. Recarregar inicia
+  // uma nova tentativa e nunca expõe o gabarito a partir do histórico.
+  const respostaVisivel = resultado;
   const alternativas = useMemo(() => {
     if (!questao) return [];
     if (questao.modalidade === "CERTO_ERRADO") return alternativasCertoErrado();
@@ -140,6 +136,8 @@ export default function ResolverQuestaoPage() {
                   </div>
                 )}
               </Card>
+
+              {idQuestion ? <ComentariosQuestao questaoId={idQuestion} /> : null}
             </article>
 
             <aside className={styles.sideColumn}>
@@ -155,10 +153,17 @@ export default function ResolverQuestaoPage() {
                       Gabarito: <strong>{respostaVisivel.gabarito}</strong>
                     </p>
                     {respostaVisivel.explicacao ? (
-                      <div className={styles.explanation}>
-                        <strong>Explicação</strong>
-                        <p>{respostaVisivel.explicacao}</p>
-                      </div>
+                      <>
+                        <Button type="button" variant="secondary" onClick={() => setMostrarExplicacao((current) => !current)}>
+                          {mostrarExplicacao ? "Ocultar explicação" : "Ver explicação"}
+                        </Button>
+                        {mostrarExplicacao ? (
+                          <div className={styles.explanation}>
+                            <strong>Explicação</strong>
+                            <p>{respostaVisivel.explicacao}</p>
+                          </div>
+                        ) : null}
+                      </>
                     ) : null}
                     <Button href="/questoes" variant="secondary">
                       Resolver outra
@@ -169,9 +174,6 @@ export default function ResolverQuestaoPage() {
                     <p className="muted">
                       Escolha uma alternativa. O gabarito só será exibido após o envio.
                     </p>
-                    {ultimaRespostaQuery.error && getApiErrorStatus(ultimaRespostaQuery.error) !== 404 ? (
-                      <p className="errorText">{getApiErrorMessage(ultimaRespostaQuery.error, "Não foi possível buscar resposta anterior.")}</p>
-                    ) : null}
                     {responderMutation.error ? (
                       <p className="errorText">{getApiErrorMessage(responderMutation.error, "Não foi possível enviar sua resposta.")}</p>
                     ) : null}

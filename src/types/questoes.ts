@@ -37,9 +37,15 @@ export type QuestaoFilters = {
   texto?: string;
   disciplinaId?: string;
   assuntoId?: string;
+  subassuntoId?: string;
   bancaId?: string;
   instituicaoId?: string;
   ano?: string;
+};
+
+export type CatalogoItem = {
+  id: number;
+  nome: string;
 };
 
 export type RespostaQuestao = {
@@ -51,4 +57,14 @@ export type RespostaQuestao = {
   acertou: boolean;
   explicacao?: string | null;
   respondidaEm: string;
+};
+
+export type Comentario = {
+  id: number;
+  questaoId: string;
+  autor: string;
+  texto: string;
+  curtidas: number;
+  descurtidas: number;
+  criadoEm: string;
 };
