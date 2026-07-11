@@ -17,7 +17,9 @@ export const API_BASE_URL = "/api/backend";
 export const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
-  timeout: 12_000,
+  // O Render pode levar alguns segundos para despertar após inatividade.
+  // Mantemos um limite finito, mas suficiente para a primeira chamada autenticada.
+  timeout: 30_000,
 });
 
 function isBrowser() {
