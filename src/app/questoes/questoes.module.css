@@ -10,24 +10,9 @@
   gap: 8px;
 }
 
-.questionHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 10px;
-}
-
-.questionTitle {
-  color: var(--color-primary);
-  font-size: 20px;
-  margin: 0 0 8px;
-}
-
-.questionActions {
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 14px;
+.questionList {
+  display: grid;
+  gap: 20px;
 }
 
 .pagination {
@@ -46,7 +31,6 @@
 
 @media (max-width: 620px) {
   .filters,
-  .questionHeader,
   .pagination {
     align-items: stretch;
     flex-direction: column;

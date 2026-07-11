@@ -1,0 +1,163 @@
+.question {
+  scroll-margin-top: 92px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 12px;
+}
+
+.identity,
+.taxonomy,
+.catalog,
+.footer,
+.result,
+.answerAction {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.identity {
+  flex-shrink: 0;
+}
+
+.number {
+  color: var(--color-muted);
+  font-weight: 800;
+}
+
+.taxonomy {
+  flex-wrap: wrap;
+  color: var(--color-muted);
+  font-size: 14px;
+}
+
+.taxonomy span::before {
+  content: "›";
+  margin-right: 10px;
+  color: var(--color-border);
+}
+
+.catalog {
+  flex-wrap: wrap;
+  color: var(--color-muted);
+  font-size: 14px;
+  padding: 12px 0;
+}
+
+.supportText,
+.statement {
+  display: grid;
+  gap: 12px;
+  padding: 18px 0;
+}
+
+.supportText {
+  border-top: 1px solid var(--color-border);
+}
+
+.supportText h3,
+.supportText p,
+.statement p,
+.explanation p {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.supportText h3 {
+  color: var(--color-primary);
+}
+
+.enunciado {
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+.answers {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 18px;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 12px;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 14px;
+  text-align: left;
+}
+
+.option strong {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-active);
+  color: var(--color-primary);
+}
+
+.option:hover,
+.selected {
+  border-color: var(--color-primary-soft);
+  background: #f8fafc;
+}
+
+.correct {
+  border-color: var(--color-success);
+  background: #f0fdf4;
+}
+
+.wrong {
+  border-color: var(--color-danger);
+  background: #fff5f5;
+}
+
+.footer {
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--color-border);
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.result,
+.answerAction {
+  flex-wrap: wrap;
+}
+
+.answerAction p {
+  margin: 0;
+}
+
+.explanation,
+.comments {
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+@media (max-width: 620px) {
+  .header,
+  .footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .taxonomy span::before {
+    margin-right: 6px;
+  }
+}

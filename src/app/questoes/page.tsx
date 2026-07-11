@@ -3,11 +3,11 @@
 import { FormEvent, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthLayout } from "@/components/AuthLayout";
-import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { EmptyState } from "@/components/EmptyState";
 import { Loading } from "@/components/Loading";
+import { QuestaoResolucao } from "@/components/QuestaoResolucao";
 import { getApiErrorMessage } from "@/services/api";
 import {
   listarAnos,
@@ -63,6 +63,11 @@ export default function QuestoesPage() {
     event.preventDefault();
     setPage(0);
     setAppliedFilters(filters);
+  }
+
+  function mudarPagina(proximaPagina: number) {
+    setPage(proximaPagina);
+    window.setTimeout(() => document.getElementById("lista-questoes")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
   }
 
   return (
@@ -187,35 +192,19 @@ export default function QuestoesPage() {
           />
         ) : null}
 
-        <div className="grid">
-          {data?.content.map((questao) => (
-            <Card key={questao.idQuestion}>
-              <div className={styles.questionHeader}>
-                <Badge>{questao.disciplina || "Disciplina não informada"}</Badge>
-                <span className="muted">{questao.banca || "Banca não informada"} · {questao.ano || "Ano não informado"}</span>
-              </div>
-              <h2 className={styles.questionTitle}>{questao.idQuestion}</h2>
-              <p>{questao.questao || questao.enunciado || "Questão sem texto disponível."}</p>
-              <p className="muted">
-                {questao.assunto ? `${questao.assunto} · ` : ""}
-                {questao.instituicao || "Instituição não informada"}
-              </p>
-              <div className={styles.questionActions}>
-                <Button href={`/questoes/${questao.idQuestion}`} variant="secondary">
-                  Resolver questão
-                </Button>
-              </div>
-            </Card>
+        <div id="lista-questoes" className={styles.questionList}>
+          {data?.content.map((questao, index) => (
+            <QuestaoResolucao key={questao.idQuestion} questao={questao} numero={page * 10 + index + 1} />
           ))}
         </div>
 
         {data && data.totalPages > 1 ? (
           <div className={styles.pagination}>
-            <Button type="button" variant="secondary" disabled={data.first} onClick={() => setPage((current) => current - 1)}>
+            <Button type="button" variant="secondary" disabled={data.first} onClick={() => mudarPagina(page - 1)}>
               Anterior
             </Button>
             <span>Página {data.number + 1} de {data.totalPages}</span>
-            <Button type="button" variant="secondary" disabled={data.last} onClick={() => setPage((current) => current + 1)}>
+            <Button type="button" variant="secondary" disabled={data.last} onClick={() => mudarPagina(page + 1)}>
               Próxima
             </Button>
           </div>
