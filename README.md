@@ -31,7 +31,7 @@ Por padrão, a web espera a API em `http://localhost:8080`.
 | Variável | Descrição |
 | --- | --- |
 | `CONCURSEIRO_API_URL` | URL base da Concurseiro API, usada pelo servidor Next e pelo proxy interno. |
-| `NEXT_PUBLIC_APP_DOWNLOAD_URL` | Link público da loja/página de download do app. |
+| `NEXT_PUBLIC_APP_DOWNLOAD_URL` | Link público da loja/página de download do app. Em produção: `https://play.google.com/store/apps/details?id=br.com.mauricio.oconcurseiro`. |
 | `NEXT_PUBLIC_WEB_URL` | URL canônica pública da web, usada em metadata, sitemap e robots. |
 | `CONCURSEIRO_DEPLOYMENT` | Defina como `production` no deploy para exigir URLs HTTPS válidas da API e da web. |
 

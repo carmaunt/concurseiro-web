@@ -16,16 +16,22 @@ type ButtonProps = BaseProps &
 
 type LinkButtonProps = BaseProps & {
   href: string;
+  target?: React.HTMLAttributeAnchorTarget;
+  rel?: string;
 };
+
+function isLinkButtonProps(props: ButtonProps | LinkButtonProps): props is LinkButtonProps {
+  return "href" in props && typeof props.href === "string";
+}
 
 export function Button(props: ButtonProps | LinkButtonProps) {
   const className = [styles.button, styles[props.variant ?? "primary"], props.className]
     .filter(Boolean)
     .join(" ");
 
-  if ("href" in props && props.href) {
+  if (isLinkButtonProps(props)) {
     return (
-      <Link className={className} href={props.href}>
+      <Link className={className} href={props.href} target={props.target} rel={props.rel}>
         {props.children}
       </Link>
     );

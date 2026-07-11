@@ -25,7 +25,12 @@ export default function BaixarAppPage() {
           <p className="muted">
             Estude pelo celular e acompanhe sua preparação de onde estiver.
           </p>
-          <Button href={downloadUrl || "/"} variant={downloadUrl ? "primary" : "secondary"}>
+          <Button
+            href={downloadUrl || "/"}
+            variant={downloadUrl ? "primary" : "secondary"}
+            target={downloadUrl ? "_blank" : undefined}
+            rel={downloadUrl ? "noopener noreferrer" : undefined}
+          >
             {downloadUrl ? "Baixar o app" : "Disponível em breve"}
           </Button>
         </Card>
