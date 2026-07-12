@@ -36,6 +36,12 @@ describe("TextoApoio", () => {
     expect(imagem.getAttribute("src")).toBe("https://imagens.exemplo.com/grafico.png");
   });
 
+  it("renderiza imagem legada armazenada em data URL", () => {
+    const imagemLegada = "data:image/png;base64,iVBORw0KGgo=";
+    render(<TextoApoio textoApoioTipo="IMAGEM" textoApoioJson={JSON.stringify({ url: imagemLegada, alt: "Mapa histórico" })} />);
+    expect(screen.getByRole("img", { name: "Mapa histórico" }).getAttribute("src")).toBe(imagemLegada);
+  });
+
   it("não tenta carregar URL de imagem inválida", () => {
     render(<TextoApoio textoApoioTipo="IMAGEM" textoApoioJson='{"url":"javascript:alert(1)"}' />);
     expect(screen.getByText("Imagem de apoio indisponível.")).not.toBeNull();

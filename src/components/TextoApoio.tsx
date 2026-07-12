@@ -136,6 +136,11 @@ function numeroPositivo(value: unknown) {
 }
 
 function urlDeImagemSegura(valor: string) {
+  const dataImagePattern = /^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=\s]+$/i;
+  // Cadastros antigos armazenam a imagem diretamente em Base64. Restringimos
+  // aos MIME types de imagem aceitos pela API para não aceitar data URLs ativos.
+  if (valor.length <= 8 * 1024 * 1024 && dataImagePattern.test(valor)) return true;
+
   try {
     const url = new URL(valor);
     return url.protocol === "https:" || url.protocol === "http:";
