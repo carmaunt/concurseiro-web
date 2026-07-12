@@ -7,6 +7,7 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { ComentariosQuestao } from "@/components/ComentariosQuestao";
 import { EmptyState } from "@/components/EmptyState";
+import { MarkdownText } from "@/components/MarkdownText";
 import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
 import { getApiErrorMessage } from "@/services/api";
 import { responderQuestao } from "@/services/questoesService";
@@ -59,13 +60,17 @@ export function QuestaoResolucao({ questao, numero }: Props) {
         {questao.textoApoioConteudo ? (
           <section className={styles.supportText}>
             <h3>{questao.textoApoioTitulo || "Texto de apoio"}</h3>
-            {questao.textoApoioConteudo.split(/\n{2,}/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+            <MarkdownText text={questao.textoApoioConteudo} />
           </section>
         ) : null}
 
         <section className={styles.statement}>
-          {questao.enunciado ? <p className={styles.enunciado}>{questao.enunciado}</p> : null}
-          {(questao.questao || "Questão sem texto disponível.").split(/\n{2,}/).map((paragraph, index) => <p key={index}>{paragraph}</p>)}
+          {questao.enunciado ? (
+            <div className={styles.enunciado}>
+              <MarkdownText text={questao.enunciado} />
+            </div>
+          ) : null}
+          <MarkdownText text={questao.questao || "Questão sem texto disponível."} />
         </section>
 
         <section className={styles.answers} aria-label={`Alternativas da questão ${numero}`}>
@@ -119,7 +124,12 @@ export function QuestaoResolucao({ questao, numero }: Props) {
           </Button>
         </footer>
 
-        {mostrarExplicacao && resultado?.explicacao ? <div className={styles.explanation}><strong>Explicação</strong><p>{resultado.explicacao}</p></div> : null}
+        {mostrarExplicacao && resultado?.explicacao ? (
+          <div className={styles.explanation}>
+            <strong>Explicação</strong>
+            <MarkdownText text={resultado.explicacao} />
+          </div>
+        ) : null}
         {mostrarComentarios ? <div className={styles.comments}><ComentariosQuestao questaoId={questao.idQuestion} /></div> : null}
       </Card>
     </div>

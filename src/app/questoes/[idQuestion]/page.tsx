@@ -11,6 +11,7 @@ import { Card } from "@/components/Card";
 import { ComentariosQuestao } from "@/components/ComentariosQuestao";
 import { EmptyState } from "@/components/EmptyState";
 import { Loading } from "@/components/Loading";
+import { MarkdownText } from "@/components/MarkdownText";
 import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
 import { getApiErrorMessage } from "@/services/api";
 import { buscarQuestao, responderQuestao } from "@/services/questoesService";
@@ -83,19 +84,19 @@ export default function ResolverQuestaoPage() {
                 <Card>
                   <h2>{questao.textoApoioTitulo || "Texto de apoio"}</h2>
                   <div className={styles.readingText}>
-                    {questao.textoApoioConteudo.split(/\n{2,}/).map((paragraph, index) => (
-                      <p key={index}>{paragraph}</p>
-                    ))}
+                    <MarkdownText text={questao.textoApoioConteudo} />
                   </div>
                 </Card>
               ) : null}
 
               <Card>
-                {questao.enunciado ? <p className={styles.enunciado}>{questao.enunciado}</p> : null}
+                {questao.enunciado ? (
+                  <div className={styles.enunciado}>
+                    <MarkdownText text={questao.enunciado} />
+                  </div>
+                ) : null}
                 <div className={styles.questionText}>
-                  {(questao.questao || "Questão sem texto disponível.").split(/\n{2,}/).map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
-                  ))}
+                  <MarkdownText text={questao.questao || "Questão sem texto disponível."} />
                 </div>
               </Card>
 
@@ -160,7 +161,7 @@ export default function ResolverQuestaoPage() {
                         {mostrarExplicacao ? (
                           <div className={styles.explanation}>
                             <strong>Explicação</strong>
-                            <p>{respostaVisivel.explicacao}</p>
+                            <MarkdownText text={respostaVisivel.explicacao} />
                           </div>
                         ) : null}
                       </>

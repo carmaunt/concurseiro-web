@@ -63,7 +63,8 @@
 .supportText h3,
 .supportText p,
 .statement p,
-.explanation p {
+.explanation p,
+.enunciado p {
   margin: 0;
   white-space: pre-wrap;
 }

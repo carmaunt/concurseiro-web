@@ -99,7 +99,7 @@ export default function QuestoesPage() {
                 disabled={disciplinasQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, disciplinaId: event.target.value, assuntoId: "", subassuntoId: "" }))}
               >
-                <option value="">Todas as disciplinas</option>
+                <option value="">Todas</option>
                 {disciplinasQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
               </select>
             </label>
@@ -111,7 +111,7 @@ export default function QuestoesPage() {
                 disabled={!filters.disciplinaId || assuntosQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, assuntoId: event.target.value, subassuntoId: "" }))}
               >
-                <option value="">{filters.disciplinaId ? "Todos os assuntos" : "Escolha uma disciplina"}</option>
+                <option value="">{filters.disciplinaId ? "Todos" : "Escolha"}</option>
                 {assuntosQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
               </select>
             </label>
@@ -123,7 +123,7 @@ export default function QuestoesPage() {
                 disabled={!filters.assuntoId || subassuntosQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, subassuntoId: event.target.value }))}
               >
-                <option value="">{filters.assuntoId ? "Todos os subassuntos" : "Escolha um assunto"}</option>
+                <option value="">{filters.assuntoId ? "Todos" : "Escolha"}</option>
                 {subassuntosQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
               </select>
             </label>
@@ -135,7 +135,7 @@ export default function QuestoesPage() {
                 disabled={bancasQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, bancaId: event.target.value }))}
               >
-                <option value="">Todas as bancas</option>
+                <option value="">Todas</option>
                 {bancasQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
               </select>
             </label>
@@ -147,7 +147,7 @@ export default function QuestoesPage() {
                 disabled={instituicoesQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, instituicaoId: event.target.value }))}
               >
-                <option value="">Todos os órgãos</option>
+                <option value="">Todas</option>
                 {instituicoesQuery.data?.map((item) => <option key={item.id} value={item.id}>{item.nome}</option>)}
               </select>
             </label>
@@ -159,7 +159,7 @@ export default function QuestoesPage() {
                 disabled={anosQuery.isLoading}
                 onChange={(event) => setFilters((current) => ({ ...current, ano: event.target.value }))}
               >
-                <option value="">Todos os anos</option>
+                <option value="">Todos</option>
                 {anosQuery.data?.map((ano) => <option key={ano} value={ano}>{ano}</option>)}
               </select>
             </label>

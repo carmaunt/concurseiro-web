@@ -51,7 +51,7 @@
 
 .readingText p,
 .questionText p,
-.enunciado {
+.enunciado p {
   margin: 0;
   white-space: pre-wrap;
 }
