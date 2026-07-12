@@ -9,6 +9,11 @@
   grid-template-columns: 1fr;
 }
 
+.card {
+  grid-template-rows: auto 1fr;
+  height: 100%;
+}
+
 .featuredBody,
 .body {
   display: grid;
@@ -19,6 +24,10 @@
 
 .featuredBody {
   padding: 24px;
+}
+
+.body {
+  grid-template-rows: auto minmax(48px, auto) minmax(72px, 1fr) auto;
 }
 
 .meta {
