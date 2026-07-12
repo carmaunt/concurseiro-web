@@ -5,7 +5,7 @@ import { Card } from "@/components/Card";
 import { EditorialCard, EditorialCompactCard, EditorialFeaturedCard } from "@/components/EditorialCards";
 import { PublicLayout } from "@/components/PublicLayout";
 import { listarConteudosPublicos, listarDestaques } from "@/services/conteudosService";
-import { excludeContent, pluralizePublications } from "@/services/editorial";
+import { pluralizePublications } from "@/services/editorial";
 import type { ConteudoPortal, ConteudoTipo } from "@/types/conteudos";
 import styles from "./page.module.css";
 
@@ -53,8 +53,7 @@ export default async function Home() {
     ...feedSections.map((section) => listarConteudosPublicos(section.tipo, 3)),
   ]);
   const destaque = destaques[0];
-  const feedsSemDestaque = feeds.map((feed) => excludeContent(feed, destaque));
-  const compactos = feedsSemDestaque.flat().slice(0, 4);
+  const compactos = feeds.flat().slice(0, 4);
 
   return (
     <PublicLayout>
@@ -101,8 +100,8 @@ export default async function Home() {
             <FeedBlock
               key={section.tipo}
               title={section.title}
-              conteudos={feedsSemDestaque[index] ?? []}
-              empty={destaque?.tipo === section.tipo ? "Sem outras publicações por enquanto" : section.empty}
+              conteudos={feeds[index] ?? []}
+              empty={section.empty}
             />
           ))}
         </div>
