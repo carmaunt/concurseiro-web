@@ -35,7 +35,7 @@ export function QuestaoResolucao({ questao, numero }: Props) {
   }, [questao.alternativas, questao.modalidade]);
 
   return (
-    <article className={styles.question} aria-labelledby={`questao-${questao.idQuestion}`}>
+    <div className={styles.question} aria-labelledby={`questao-${questao.idQuestion}`}>
       <Card>
         <header className={styles.header}>
           <div className={styles.identity}>
@@ -122,6 +122,6 @@ export function QuestaoResolucao({ questao, numero }: Props) {
         {mostrarExplicacao && resultado?.explicacao ? <div className={styles.explanation}><strong>Explicação</strong><p>{resultado.explicacao}</p></div> : null}
         {mostrarComentarios ? <div className={styles.comments}><ComentariosQuestao questaoId={questao.idQuestion} /></div> : null}
       </Card>
-    </article>
+    </div>
   );
 }

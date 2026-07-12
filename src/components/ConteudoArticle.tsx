@@ -82,6 +82,7 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
   const tipoPath = tipoToPath(tipo);
   const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
   const articleUrl = `${baseUrl}${tipoPath}/${encodeURIComponent(conteudo.slug)}`;
+  const blocosConteudo = renderContent(conteudo.conteudo, conteudo.id);
   const structuredData = {
     "@context": "https://schema.org",
     "@type": tipo === "NOTICIA" ? "NewsArticle" : "Article",
@@ -143,7 +144,13 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
         </div>
 
         <div className={styles.content}>
-          {renderContent(conteudo.conteudo, conteudo.id)}
+          {blocosConteudo.slice(0, 3)}
+          {tipo === "BLOG" && conteudo.imagemSecundaria ? (
+            <div className={styles.inlineImage}>
+              <CoverImage src={conteudo.imagemSecundaria} alt={conteudo.imagemSecundariaAlt || "Imagem complementar do artigo"} variant="article" />
+            </div>
+          ) : null}
+          {blocosConteudo.slice(3)}
         </div>
 
         {conteudo.fontesOficiais?.length ? (
