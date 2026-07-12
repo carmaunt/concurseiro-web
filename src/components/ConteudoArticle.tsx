@@ -90,7 +90,7 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
     datePublished: conteudo.publicadoEm || conteudo.createdAt,
     dateModified: conteudo.updatedAt,
     mainEntityOfPage: articleUrl,
-    author: { "@type": "Organization", name: "O Concurseiro" },
+    author: { "@type": "Organization", name: conteudo.autorNome || "O Concurseiro" },
     publisher: { "@type": "Organization", name: "O Concurseiro", url: baseUrl },
     image: conteudo.imagemCapa ? [conteudo.imagemCapa] : undefined,
   };
@@ -135,11 +135,23 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
           </time>
         </div>
 
-        <CoverImage src={conteudo.imagemCapa} alt="" priority variant="article" />
+        <CoverImage src={conteudo.imagemCapa} alt={conteudo.imagemCapaAlt || conteudo.titulo} priority variant="article" />
+
+        <div className={styles.byline}>
+          <span>Por {conteudo.autorNome || "O Concurseiro"}</span>
+          {conteudo.revisadoPor ? <span>Revisado por {conteudo.revisadoPor}</span> : null}
+        </div>
 
         <div className={styles.content}>
           {renderContent(conteudo.conteudo, conteudo.id)}
         </div>
+
+        {conteudo.fontesOficiais?.length ? (
+          <section className={styles.sources} aria-label="Fontes oficiais">
+            <h2>Fontes oficiais</h2>
+            <ul>{conteudo.fontesOficiais.map((fonte) => <li key={fonte.url}><a href={fonte.url} target="_blank" rel="noreferrer">{fonte.nome}</a></li>)}</ul>
+          </section>
+        ) : null}
 
         {tags.length > 0 ? (
           <div className={styles.tags} aria-label="Tags">
