@@ -11,6 +11,8 @@ const STORAGE_KEYS = {
   userRole: "oconcurseiro.userRole",
 } as const;
 
+const SESSION_HINT_COOKIE = "oconcurseiro_session";
+
 function isBrowser() {
   return typeof window !== "undefined";
 }
@@ -44,9 +46,11 @@ export function saveAuthSession({ email, role }: AuthSession) {
   if (email) localStorage.setItem(STORAGE_KEYS.userEmail, email);
   const parsedRole = parseUserRole(role);
   if (parsedRole) localStorage.setItem(STORAGE_KEYS.userRole, parsedRole);
+  document.cookie = `${SESSION_HINT_COOKIE}=1; Path=/; Max-Age=14400; SameSite=Lax; Secure`;
 }
 
 export function clearAuthSession() {
   if (!isBrowser()) return;
   Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
+  document.cookie = `${SESSION_HINT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
 }
