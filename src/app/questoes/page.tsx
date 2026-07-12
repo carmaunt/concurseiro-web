@@ -198,13 +198,13 @@ export default function QuestoesPage() {
           ))}
         </div>
 
-        {data && data.totalPages > 1 ? (
+        {data && data.page.totalPages > 1 ? (
           <div className={styles.pagination}>
-            <Button type="button" variant="secondary" disabled={data.first} onClick={() => mudarPagina(page - 1)}>
+            <Button type="button" variant="secondary" disabled={data.page.number === 0} onClick={() => mudarPagina(page - 1)}>
               Anterior
             </Button>
-            <span>Página {data.number + 1} de {data.totalPages}</span>
-            <Button type="button" variant="secondary" disabled={data.last} onClick={() => mudarPagina(page + 1)}>
+            <span>Página {data.page.number + 1} de {data.page.totalPages}</span>
+            <Button type="button" variant="secondary" disabled={data.page.number >= data.page.totalPages - 1} onClick={() => mudarPagina(page + 1)}>
               Próxima
             </Button>
           </div>
