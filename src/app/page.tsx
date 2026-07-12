@@ -5,7 +5,6 @@ import { Card } from "@/components/Card";
 import { EditorialCard, EditorialCompactCard, EditorialFeaturedCard } from "@/components/EditorialCards";
 import { PublicLayout } from "@/components/PublicLayout";
 import { listarConteudosPublicos, listarDestaques } from "@/services/conteudosService";
-import { pluralizePublications } from "@/services/editorial";
 import type { ConteudoPortal, ConteudoTipo } from "@/types/conteudos";
 import styles from "./page.module.css";
 
@@ -26,7 +25,7 @@ function FeedBlock({ title, conteudos, empty }: { title: string; conteudos: Cont
     <section className={styles.feedBlock}>
       <div className={styles.feedTitle}>
         <h2>{title}</h2>
-        <span>{conteudos.length > 0 ? pluralizePublications(conteudos.length) : "Sem publicações"}</span>
+        <span>{conteudos.length > 0 ? "Mais recente" : "Sem publicações"}</span>
       </div>
 
       {conteudos.length === 0 ? (
@@ -37,7 +36,7 @@ function FeedBlock({ title, conteudos, empty }: { title: string; conteudos: Cont
           </p>
         </Card>
       ) : (
-        <div className="grid">
+        <div className={styles.sectionCard}>
           {conteudos.map((conteudo) => (
             <EditorialCard key={conteudo.id} conteudo={conteudo} />
           ))}
@@ -50,7 +49,7 @@ function FeedBlock({ title, conteudos, empty }: { title: string; conteudos: Cont
 export default async function Home() {
   const [destaques, ...feeds] = await Promise.all([
     listarDestaques(1),
-    ...feedSections.map((section) => listarConteudosPublicos(section.tipo, 3)),
+    ...feedSections.map((section) => listarConteudosPublicos(section.tipo, 1)),
   ]);
   const destaque = destaques[0];
   const compactos = feeds.flat().slice(0, 4);
