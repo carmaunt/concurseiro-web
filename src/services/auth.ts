@@ -12,6 +12,9 @@ const STORAGE_KEYS = {
 } as const;
 
 const SESSION_HINT_COOKIE = "oconcurseiro_session";
+// O cookie é apenas uma pista para o middleware permitir que o navegador
+// tente renovar a sessão. A autenticação real continua sendo HttpOnly na API.
+const SESSION_HINT_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 function isBrowser() {
   return typeof window !== "undefined";
@@ -46,7 +49,7 @@ export function saveAuthSession({ email, role }: AuthSession) {
   if (email) localStorage.setItem(STORAGE_KEYS.userEmail, email);
   const parsedRole = parseUserRole(role);
   if (parsedRole) localStorage.setItem(STORAGE_KEYS.userRole, parsedRole);
-  document.cookie = `${SESSION_HINT_COOKIE}=1; Path=/; Max-Age=14400; SameSite=Lax; Secure`;
+  document.cookie = `${SESSION_HINT_COOKIE}=1; Path=/; Max-Age=${SESSION_HINT_MAX_AGE_SECONDS}; SameSite=Lax; Secure`;
 }
 
 export function clearAuthSession() {

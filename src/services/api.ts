@@ -1,7 +1,14 @@
-import axios from "axios";
+import axios, { type AxiosRequestConfig } from "axios";
 import { clearAuthSession } from "./auth";
 
 const PUBLIC_AUTH_PATHS = ["/login", "/cadastro"];
+const AUTH_ENDPOINT_PREFIX = "/api/v1/auth/";
+
+type RetriableRequest = AxiosRequestConfig & {
+  _sessionRefreshAttempted?: boolean;
+};
+
+let refreshInProgress: Promise<void> | null = null;
 
 type ApiErrorPayload = {
   title?: unknown;
@@ -28,6 +35,30 @@ function isBrowser() {
 
 function shouldRedirectToLogin() {
   return isBrowser() && !PUBLIC_AUTH_PATHS.includes(window.location.pathname);
+}
+
+function isAuthEndpoint(url?: string) {
+  return Boolean(url?.includes(AUTH_ENDPOINT_PREFIX));
+}
+
+function refreshAccessToken() {
+  if (!refreshInProgress) {
+    refreshInProgress = api
+      .post("/api/v1/auth/refresh")
+      .then(() => undefined)
+      .finally(() => {
+        refreshInProgress = null;
+      });
+  }
+
+  return refreshInProgress;
+}
+
+function endSession() {
+  clearAuthSession();
+  if (shouldRedirectToLogin()) {
+    window.location.assign(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+  }
 }
 
 export function unwrapApiData<T>(payload: unknown): T {
@@ -65,14 +96,22 @@ export function getApiErrorMessage(error: unknown, fallback = "Não foi possíve
 
 api.interceptors.response.use(
   (response) => response,
-  (error: unknown) => {
-    if (getApiErrorStatus(error) === 401) {
-      clearAuthSession();
+  async (error: unknown) => {
+    const request = axios.isAxiosError(error) ? error.config as RetriableRequest | undefined : undefined;
+    const status = getApiErrorStatus(error);
 
-      if (shouldRedirectToLogin()) {
-        window.location.assign("/login");
+    if (status === 401 && request && !request._sessionRefreshAttempted && !isAuthEndpoint(request.url)) {
+      request._sessionRefreshAttempted = true;
+
+      try {
+        await refreshAccessToken();
+        return api.request(request);
+      } catch {
+        endSession();
       }
     }
+
+    if (status === 401 && !isAuthEndpoint(request?.url)) endSession();
 
     return Promise.reject(error);
   },

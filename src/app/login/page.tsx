@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -13,6 +13,7 @@ import styles from "./auth.module.css";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
@@ -23,10 +24,19 @@ export default function LoginPage() {
     setError("");
     setSubmitting(true);
 
+    // Alguns navegadores preenchem credenciais sem disparar onChange. Ler o
+    // formulário evita enviar estados vazios quando o autofill está ativo.
+    const formData = new FormData(event.currentTarget);
+    const emailInformado = String(formData.get("email") || "").trim();
+    const senhaInformada = String(formData.get("senha") || "");
+
+    setEmail(emailInformado);
+    setSenha(senhaInformada);
+
     try {
-      const session = await login({ email, senha });
+      const session = await login({ email: emailInformado, senha: senhaInformada });
       saveAuthSession(session);
-      router.push("/dashboard");
+      router.push(safeNextPath(searchParams.get("next")));
     } catch (err) {
       setError(getApiErrorMessage(err, "Não foi possível entrar."));
     } finally {
@@ -46,6 +56,7 @@ export default function LoginPage() {
               <input
                 className="input"
                 type="email"
+                name="email"
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 required
@@ -57,6 +68,7 @@ export default function LoginPage() {
               <input
                 className="input"
                 type="password"
+                name="senha"
                 value={senha}
                 onChange={(event) => setSenha(event.target.value)}
                 required
@@ -76,4 +88,8 @@ export default function LoginPage() {
       </section>
     </PublicLayout>
   );
+}
+
+function safeNextPath(next: string | null) {
+  return next && next.startsWith("/") && !next.startsWith("//") ? next : "/dashboard";
 }
