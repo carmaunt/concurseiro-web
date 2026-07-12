@@ -12,6 +12,7 @@ import { ComentariosQuestao } from "@/components/ComentariosQuestao";
 import { EmptyState } from "@/components/EmptyState";
 import { Loading } from "@/components/Loading";
 import { MarkdownText } from "@/components/MarkdownText";
+import { possuiTextoApoio, TextoApoio } from "@/components/TextoApoio";
 import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
 import { getApiErrorMessage } from "@/services/api";
 import { buscarQuestao, responderQuestao } from "@/services/questoesService";
@@ -80,11 +81,10 @@ export default function ResolverQuestaoPage() {
                 </p>
               </Card>
 
-              {questao.textoApoioConteudo ? (
+              {possuiTextoApoio(questao) ? (
                 <Card>
-                  <h2>{questao.textoApoioTitulo || "Texto de apoio"}</h2>
                   <div className={styles.readingText}>
-                    <MarkdownText text={questao.textoApoioConteudo} />
+                    <TextoApoio {...questao} />
                   </div>
                 </Card>
               ) : null}

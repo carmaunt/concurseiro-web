@@ -8,6 +8,7 @@ import { Card } from "@/components/Card";
 import { ComentariosQuestao } from "@/components/ComentariosQuestao";
 import { EmptyState } from "@/components/EmptyState";
 import { MarkdownText } from "@/components/MarkdownText";
+import { possuiTextoApoio, TextoApoio } from "@/components/TextoApoio";
 import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
 import { getApiErrorMessage } from "@/services/api";
 import { responderQuestao } from "@/services/questoesService";
@@ -57,10 +58,9 @@ export function QuestaoResolucao({ questao, numero }: Props) {
           {questao.cargo ? <span><strong>Cargo:</strong> {questao.cargo}</span> : null}
         </div>
 
-        {questao.textoApoioConteudo ? (
+        {possuiTextoApoio(questao) ? (
           <section className={styles.supportText}>
-            <h3>{questao.textoApoioTitulo || "Texto de apoio"}</h3>
-            <MarkdownText text={questao.textoApoioConteudo} />
+            <TextoApoio {...questao} />
           </section>
         ) : null}
 

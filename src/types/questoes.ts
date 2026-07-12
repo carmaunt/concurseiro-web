@@ -15,6 +15,8 @@ export type Questao = {
   alternativas?: string | null;
   textoApoioTitulo?: string | null;
   textoApoioConteudo?: string | null;
+  textoApoioTipo?: "TEXTO" | "CODIGO" | "TABELA" | "IMAGEM" | string | null;
+  textoApoioJson?: string | null;
   disciplina?: string | null;
   disciplinaId?: number | null;
   assunto?: string | null;
