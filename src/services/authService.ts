@@ -1,5 +1,6 @@
 import { api, unwrapApiData } from "./api";
 import { parseUserRole } from "./auth";
+import { getGoogleFirebaseIdToken, signOutFromFirebase } from "./firebaseAuth";
 
 export type LoginPayload = {
   email: string;
@@ -31,8 +32,23 @@ export async function register(payload: RegisterPayload) {
   await api.post("/api/v1/auth/register/final", payload);
 }
 
+export async function loginWithGoogle() {
+  const idToken = await getGoogleFirebaseIdToken();
+  const response = await api.post("/api/v1/auth/firebase", { idToken });
+  const data = unwrapApiData<AuthResponse>(response.data);
+
+  return {
+    email: data.email,
+    role: parseUserRole(data.role),
+  };
+}
+
 export async function logout() {
-  await api.post("/api/v1/auth/logout");
+  try {
+    await api.post("/api/v1/auth/logout");
+  } finally {
+    await signOutFromFirebase();
+  }
 }
 
 export async function me() {

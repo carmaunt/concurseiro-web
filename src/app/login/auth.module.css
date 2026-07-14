@@ -21,3 +21,55 @@
   color: var(--color-primary);
   font-weight: 800;
 }
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--color-border);
+}
+
+.googleButton {
+  min-height: 44px;
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  background: #fff;
+  color: #3c4043;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.googleButton:hover:not(:disabled) {
+  background: #f8faff;
+  border-color: #c7cacf;
+}
+
+.googleButton:focus-visible {
+  outline: 3px solid rgba(66, 133, 244, 0.3);
+  outline-offset: 2px;
+}
+
+.googleButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.googleIcon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+}

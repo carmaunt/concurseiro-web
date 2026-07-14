@@ -24,6 +24,8 @@ npm run dev
 
 O deploy de VPS está documentado em [docs/DEPLOY-HOSTGATOR.md](docs/DEPLOY-HOSTGATOR.md). A imagem Docker usa Node 22.16.0 e o build exige URLs HTTPS ao definir `CONCURSEIRO_DEPLOYMENT=production`.
 
+Para habilitar login com Google, crie um **aplicativo Web** no projeto Firebase `concurseiro-ad048`, mantenha o provedor Google habilitado e inclua `appoconcurseiro.com.br` em **Authentication → Settings → Authorized domains**. Copie a configuração pública gerada pelo Firebase para as variáveis `NEXT_PUBLIC_FIREBASE_*` no `.env.production` da VPS antes do build.
+
 Por padrão, a web espera a API em `http://localhost:8080`.
 
 ## Variáveis de ambiente
@@ -32,6 +34,10 @@ Por padrão, a web espera a API em `http://localhost:8080`.
 | --- | --- |
 | `CONCURSEIRO_API_URL` | URL base da Concurseiro API, usada pelo servidor Next e pelo proxy interno. |
 | `NEXT_PUBLIC_APP_DOWNLOAD_URL` | Link público da loja/página de download do app. Em produção: `https://play.google.com/store/apps/details?id=br.com.mauricio.oconcurseiro`. |
+| `NEXT_PUBLIC_FIREBASE_API_KEY` | Chave pública do aplicativo Web do Firebase, usada no login com Google. |
+| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Domínio de autenticação do Firebase, normalmente `SEU_PROJETO.firebaseapp.com`. |
+| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | ID do projeto Firebase já usado pelo aplicativo Android. |
+| `NEXT_PUBLIC_FIREBASE_APP_ID` | App ID do aplicativo Web criado no Firebase. |
 | `NEXT_PUBLIC_WEB_URL` | URL canônica pública da web, usada em metadata, sitemap e robots. |
 | `CONCURSEIRO_DEPLOYMENT` | Defina como `production` no deploy para exigir URLs HTTPS válidas da API e da web. |
 
