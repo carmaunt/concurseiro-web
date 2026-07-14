@@ -38,7 +38,7 @@ export default function LoginPage() {
       saveAuthSession(session);
       router.push(safeNextPath(searchParams.get("next")));
     } catch (err) {
-      setError(getApiErrorMessage(err, "Não foi possível entrar."));
+      setError(getFirebaseLoginErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
@@ -53,7 +53,7 @@ export default function LoginPage() {
       saveAuthSession(session);
       router.push(safeNextPath(searchParams.get("next")));
     } catch (err) {
-      setError(getGoogleLoginErrorMessage(err));
+      setError(getFirebaseLoginErrorMessage(err));
     } finally {
       setSubmitting(false);
     }
@@ -115,7 +115,7 @@ export default function LoginPage() {
   );
 }
 
-function getGoogleLoginErrorMessage(error: unknown) {
+function getFirebaseLoginErrorMessage(error: unknown) {
   if (typeof error === "object" && error && "code" in error) {
     const code = String(error.code);
     if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
@@ -123,6 +123,12 @@ function getGoogleLoginErrorMessage(error: unknown) {
     }
     if (code === "auth/popup-blocked") {
       return "O navegador bloqueou a janela do Google. Permita pop-ups e tente novamente.";
+    }
+    if (code === "auth/invalid-credential" || code === "auth/user-not-found" || code === "auth/wrong-password") {
+      return "E-mail ou senha inválidos.";
+    }
+    if (code === "auth/user-disabled") {
+      return "Esta conta está desativada.";
     }
   }
 
