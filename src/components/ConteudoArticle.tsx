@@ -10,7 +10,7 @@ import type { ConteudoTipo } from "@/types/conteudos";
 import styles from "./ConteudoArticle.module.css";
 
 function renderInline(text: string) {
-  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g);
+  const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\)|\[\d+\])/g);
 
   return parts.map((part, index) => {
     const strong = part.match(/^\*\*([^*]+)\*\*$/);
@@ -28,8 +28,19 @@ function renderInline(text: string) {
       );
     }
 
+    const reference = part.match(/^\[(\d+)\]$/);
+    if (reference) return <sup key={index} className="reference">{reference[1]}</sup>;
+
     return part;
   });
+}
+
+function splitTableRow(line: string) {
+  return line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => cell.trim());
+}
+
+function isTableDivider(line: string) {
+  return /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim());
 }
 
 function safeHref(value: string) {
@@ -55,6 +66,26 @@ function renderContent(content: string, id: number) {
     if (block.startsWith("> ")) return <blockquote key={key}>{renderInline(block.replace(/^>\s?/gm, ""))}</blockquote>;
 
     const lines = block.split("\n").map((line) => line.trim()).filter(Boolean);
+    if (lines.length >= 3 && lines[0].includes("|") && isTableDivider(lines[1])) {
+      const header = splitTableRow(lines[0]);
+      const rows = lines.slice(2).filter((line) => line.includes("|")).map(splitTableRow);
+
+      return (
+        <div className={styles.tableWrap} key={key}>
+          <table>
+            <thead>
+              <tr>{header.map((cell, cellIndex) => <th key={cellIndex}>{renderInline(cell)}</th>)}</tr>
+            </thead>
+            <tbody>
+              {rows.map((row, rowIndex) => (
+                <tr key={rowIndex}>{header.map((_, cellIndex) => <td key={cellIndex}>{renderInline(row[cellIndex] ?? "")}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
+
     if (lines.length > 1 && lines.every((line) => /^[-*]\s+/.test(line))) {
       return (
         <ul key={key}>
@@ -62,6 +93,16 @@ function renderContent(content: string, id: number) {
             <li key={lineIndex}>{renderInline(line.replace(/^[-*]\s+/, ""))}</li>
           ))}
         </ul>
+      );
+    }
+
+    if (lines.length > 1 && lines.every((line) => /^\d+\.\s+/.test(line))) {
+      return (
+        <ol key={key}>
+          {lines.map((line, lineIndex) => (
+            <li key={lineIndex}>{renderInline(line.replace(/^\d+\.\s+/, ""))}</li>
+          ))}
+        </ol>
       );
     }
 
