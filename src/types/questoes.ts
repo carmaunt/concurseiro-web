@@ -61,6 +61,14 @@ export type RespostaQuestao = {
   respondidaEm: string;
 };
 
+export type RespostaQuestaoAmostra = {
+  idQuestion: string;
+  respostaSelecionada: string;
+  gabarito: string;
+  acertou: boolean;
+  explicacao?: string | null;
+};
+
 export type Comentario = {
   id: number;
   questaoId: string;

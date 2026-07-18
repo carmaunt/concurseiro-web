@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "./Button.module.css";
 
-type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 type BaseProps = {
   children: React.ReactNode;
@@ -14,10 +14,8 @@ type ButtonProps = BaseProps &
     href?: never;
   };
 
-type LinkButtonProps = BaseProps & {
+type LinkButtonProps = BaseProps & Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "children" | "className" | "href"> & {
   href: string;
-  target?: React.HTMLAttributeAnchorTarget;
-  rel?: string;
 };
 
 function isLinkButtonProps(props: ButtonProps | LinkButtonProps): props is LinkButtonProps {
@@ -30,9 +28,13 @@ export function Button(props: ButtonProps | LinkButtonProps) {
     .join(" ");
 
   if (isLinkButtonProps(props)) {
+    const { children, variant, className: customClassName, ...linkProps } = props;
+    const linkClassName = [styles.button, styles[variant ?? "primary"], customClassName]
+      .filter(Boolean)
+      .join(" ");
     return (
-      <Link className={className} href={props.href} target={props.target} rel={props.rel}>
-        {props.children}
+      <Link className={linkClassName} {...linkProps}>
+        {children}
       </Link>
     );
   }

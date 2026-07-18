@@ -12,12 +12,17 @@ const STORAGE_KEYS = {
 } as const;
 
 const SESSION_HINT_COOKIE = "oconcurseiro_session";
+export const AUTH_SESSION_CHANGED_EVENT = "oconcurseiro:auth-session-changed";
 // O cookie é apenas uma pista para o middleware permitir que o navegador
 // tente renovar a sessão. A autenticação real continua sendo HttpOnly na API.
 const SESSION_HINT_MAX_AGE_SECONDS = 60 * 60 * 24 * 30;
 
 function isBrowser() {
   return typeof window !== "undefined";
+}
+
+function notifyAuthSessionChanged() {
+  if (isBrowser()) window.dispatchEvent(new Event(AUTH_SESSION_CHANGED_EVENT));
 }
 
 export function parseUserRole(value: unknown): UserRole | null {
@@ -50,10 +55,12 @@ export function saveAuthSession({ email, role }: AuthSession) {
   const parsedRole = parseUserRole(role);
   if (parsedRole) localStorage.setItem(STORAGE_KEYS.userRole, parsedRole);
   document.cookie = `${SESSION_HINT_COOKIE}=1; Path=/; Max-Age=${SESSION_HINT_MAX_AGE_SECONDS}; SameSite=Lax; Secure`;
+  notifyAuthSessionChanged();
 }
 
 export function clearAuthSession() {
   if (!isBrowser()) return;
   Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
   document.cookie = `${SESSION_HINT_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax; Secure`;
+  notifyAuthSessionChanged();
 }

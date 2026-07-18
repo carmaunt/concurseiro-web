@@ -50,6 +50,16 @@ export async function listarConteudosPublicos(tipo: ConteudoTipo, size = 10) {
   return data.content;
 }
 
+export async function listarConteudosRelacionados(search: string, size = 6) {
+  const params = new URLSearchParams({
+    search: search.trim(),
+    page: "0",
+    size: String(size),
+  });
+  const data = await apiFetch<ConteudosPage>(`/api/v1/conteudos?${params.toString()}`);
+  return normalizeConteudosPage(data).content;
+}
+
 export async function listarConteudosPublicosPage({
   tipo,
   search,
@@ -129,6 +139,15 @@ export async function listarDestaques(size = 5) {
 
 export async function buscarConteudoPublicado(tipo: ConteudoTipo, slug: string) {
   return apiFetch<ConteudoPortal>(`/api/v1/conteudos/${tipo}/${encodeURIComponent(slug)}`);
+}
+
+export async function buscarConteudoPublicadoComFallback(tipo: ConteudoTipo, slugs: readonly string[]) {
+  for (const slug of slugs) {
+    const conteudo = await buscarConteudoPublicado(tipo, slug);
+    if (conteudo) return conteudo;
+  }
+
+  return null;
 }
 
 export function tipoToPath(tipo: ConteudoTipo) {

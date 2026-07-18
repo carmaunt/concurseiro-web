@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { AttributedStoreLink } from "@/components/AttributedStoreLink";
 import { PublicLayout } from "@/components/PublicLayout";
+import { GOOGLE_PLAY_URL } from "@/services/store";
 
 export const metadata: Metadata = {
   title: "Baixar app",
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default function BaixarAppPage() {
-  const downloadUrl = process.env.NEXT_PUBLIC_APP_DOWNLOAD_URL;
+  const downloadUrl = process.env.NEXT_PUBLIC_APP_DOWNLOAD_URL || GOOGLE_PLAY_URL;
 
   return (
     <PublicLayout>
@@ -25,14 +26,9 @@ export default function BaixarAppPage() {
           <p className="muted">
             Estude pelo celular e acompanhe sua preparação de onde estiver.
           </p>
-          <Button
-            href={downloadUrl || "/"}
-            variant={downloadUrl ? "primary" : "secondary"}
-            target={downloadUrl ? "_blank" : undefined}
-            rel={downloadUrl ? "noopener noreferrer" : undefined}
-          >
-            {downloadUrl ? "Baixar o app" : "Disponível em breve"}
-          </Button>
+          <AttributedStoreLink href={downloadUrl} ctaId="download_page_primary">
+            Baixar no Google Play
+          </AttributedStoreLink>
         </Card>
       </section>
     </PublicLayout>
