@@ -36,14 +36,145 @@
   margin-top: 22px;
 }
 
-.highlight {
-  min-height: 230px;
-  display: grid;
-  align-content: center;
-  gap: 10px;
+.productOverview {
+  overflow: hidden;
+  border: 1px solid #d9e7f5;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 60px rgba(18, 32, 51, 0.12);
+  padding: 22px;
 }
 
-.highlight h2,
+.productOverviewHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.productOverviewHeader > span:last-child {
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.productOverview h2 {
+  margin: 18px 0;
+  color: var(--color-primary);
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.16;
+}
+
+.studyFlow {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.studyFlow li {
+  display: grid;
+  grid-template-columns: 38px 1fr;
+  gap: 12px;
+  padding: 13px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.studyFlow li > span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--color-active);
+  color: var(--color-primary-soft);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.studyFlow strong {
+  color: var(--color-primary);
+  font-size: 15px;
+}
+
+.studyFlow p {
+  margin: 3px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.productOverviewFooter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.productOverviewFooter span {
+  border-radius: 999px;
+  background: #f5f7fa;
+  color: var(--color-primary-soft);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 10px;
+}
+
+.productSection {
+  padding: 48px 0 40px;
+}
+
+.productSectionHeading {
+  max-width: 720px;
+}
+
+.productSectionHeading h2 {
+  margin: 12px 0 8px;
+  color: var(--color-primary);
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.14;
+}
+
+.productSectionHeading p {
+  margin: 0;
+  color: var(--color-muted);
+  font-size: 17px;
+}
+
+.productBenefits {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.productBenefit {
+  min-height: 190px;
+  padding: 22px;
+}
+
+.productBenefit > span {
+  color: #7a91aa;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.productBenefit h3 {
+  margin: 24px 0 6px;
+  color: var(--color-primary);
+  font-size: 22px;
+}
+
+.productBenefit p {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.editorialHighlight {
+  max-width: 760px;
+  margin-bottom: 24px;
+}
+
 .cardTitle {
   margin: 8px 0 0;
   color: var(--color-primary);
@@ -171,7 +302,16 @@
   }
 
   .feedGrid,
-  .compactGrid {
+  .compactGrid,
+  .productBenefits {
     grid-template-columns: 1fr;
+  }
+
+  .productSection {
+    padding: 32px 0 28px;
+  }
+
+  .productBenefit {
+    min-height: auto;
   }
 }

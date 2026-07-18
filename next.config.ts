@@ -3,10 +3,14 @@ import type { NextConfig } from "next";
 const apiOrigin = (process.env.CONCURSEIRO_API_URL || process.env.NEXT_PUBLIC_API_URL || "").replace(/\/$/, "");
 const webOrigin = (process.env.NEXT_PUBLIC_WEB_URL || "").replace(/\/$/, "");
 const isProductionDeployment = process.env.CONCURSEIRO_DEPLOYMENT === "production";
-const imageHosts = (process.env.NEXT_PUBLIC_IMAGE_HOSTNAMES || "images.unsplash.com")
-  .split(",")
-  .map((host) => host.trim())
-  .filter(Boolean);
+const defaultImageHosts = [
+  "images.unsplash.com",
+  "pub-1f99313aba95461392d7833e47a9be70.r2.dev",
+];
+const imageHosts = Array.from(new Set([
+  ...defaultImageHosts,
+  ...(process.env.NEXT_PUBLIC_IMAGE_HOSTNAMES || "").split(","),
+].map((host) => host.trim()).filter(Boolean)));
 
 function assertProductionUrl(name: string, value: string) {
   if (!value) {
@@ -63,6 +67,15 @@ const nextConfig: NextConfig = {
   output: "standalone",
   images: {
     remotePatterns: imageHosts.map((hostname) => ({ protocol: "https", hostname })),
+  },
+  async redirects() {
+    return [
+      {
+        source: "/noticias/governo-autoriza-concursos-receita-federal-banco-central-316-vagas",
+        destination: "/noticias/concurso-receita-federal-2026-146-vagas",
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

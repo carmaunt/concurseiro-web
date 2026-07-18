@@ -3,15 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Button } from "./Button";
-import { clearAuthSession, hasAuthSession } from "@/services/auth";
+import { AUTH_SESSION_CHANGED_EVENT, clearAuthSession, hasAuthSession } from "@/services/auth";
 import { logout } from "@/services/authService";
 import styles from "./Header.module.css";
 
 const publicLinks = [
   { href: "/", label: "Início" },
   { href: "/questoes", label: "Questões" },
+  { href: "/concursos", label: "Guias" },
   { href: "/noticias", label: "Notícias" },
   { href: "/blog", label: "Blog" },
   { href: "/concursos-abertos", label: "Concursos abertos" },
@@ -19,12 +20,31 @@ const publicLinks = [
   { href: "/baixar-app", label: "Baixar app" },
 ];
 
+function subscribeToAuthSession(onStoreChange: () => void) {
+  window.addEventListener("storage", onStoreChange);
+  window.addEventListener(AUTH_SESSION_CHANGED_EVENT, onStoreChange);
+
+  return () => {
+    window.removeEventListener("storage", onStoreChange);
+    window.removeEventListener(AUTH_SESSION_CHANGED_EVENT, onStoreChange);
+  };
+}
+
+function getServerAuthSessionSnapshot() {
+  return false;
+}
+
 export function Header({ authenticated = false }: { authenticated?: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const isLogged = authenticated || hasAuthSession();
+  const hasStoredSession = useSyncExternalStore(
+    subscribeToAuthSession,
+    hasAuthSession,
+    getServerAuthSessionSnapshot,
+  );
+  const isLogged = authenticated || hasStoredSession;
 
   async function handleLogout() {
     setIsLoggingOut(true);
@@ -66,7 +86,7 @@ export function Header({ authenticated = false }: { authenticated?: boolean }) {
           {publicLinks.map((link) => (
             <Link
               key={link.href}
-              className={pathname === link.href ? styles.active : undefined}
+              className={pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`)) ? styles.active : undefined}
               href={link.href}
               onClick={() => setIsMenuOpen(false)}
             >

@@ -1,10 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Badge } from "./Badge";
+import { ArticleNextStep } from "./ArticleNextStep";
 import { CoverImage } from "./CoverImage";
 import { EditorialCompactCard } from "./EditorialCards";
 import { PublicLayout } from "./PublicLayout";
-import { buscarConteudoPublicado, formatDate, listarConteudosPublicos, tipoToPath } from "@/services/conteudosService";
+import { canonicalContentSlug, contentLookupSlugs } from "@/services/contentAliases";
+import { buscarConteudoPublicadoComFallback, formatDate, listarConteudosPublicos, tipoToPath } from "@/services/conteudosService";
 import { excludeContent, normalizeContent, splitTags, tipoLabel } from "@/services/editorial";
 import type { ConteudoTipo } from "@/types/conteudos";
 import styles from "./ConteudoArticle.module.css";
@@ -61,6 +63,9 @@ function renderContent(content: string, id: number) {
   return blocks.map((block, index) => {
     const key = `${id}-${index}`;
 
+    // O template já possui o único H1 da página. Conteúdos antigos importados
+    // com um H1 em Markdown não devem repetir o título dentro do artigo.
+    if (block.startsWith("# ")) return null;
     if (block.startsWith("### ")) return <h3 key={key}>{renderInline(block.slice(4))}</h3>;
     if (block.startsWith("## ")) return <h2 key={key}>{renderInline(block.slice(3))}</h2>;
     if (block.startsWith("> ")) return <blockquote key={key}>{renderInline(block.replace(/^>\s?/gm, ""))}</blockquote>;
@@ -112,7 +117,7 @@ function renderContent(content: string, id: number) {
 
 export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug: string }) {
   const [conteudo, relacionadosBase] = await Promise.all([
-    buscarConteudoPublicado(tipo, slug),
+    buscarConteudoPublicadoComFallback(tipo, contentLookupSlugs(tipo, slug)),
     listarConteudosPublicos(tipo, 4),
   ]);
 
@@ -121,20 +126,35 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
   const tags = splitTags(conteudo.tags);
   const relacionados = excludeContent(relacionadosBase, conteudo).slice(0, 3);
   const tipoPath = tipoToPath(tipo);
-  const baseUrl = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
-  const articleUrl = `${baseUrl}${tipoPath}/${encodeURIComponent(conteudo.slug)}`;
+  const baseUrl = (process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000").replace(/\/$/, "");
+  const articleSlug = canonicalContentSlug(tipo, slug);
+  const articleUrl = `${baseUrl}${tipoPath}/${encodeURIComponent(articleSlug)}`;
   const blocosConteudo = renderContent(conteudo.conteudo, conteudo.id);
+  const authorName = conteudo.autorNome || "O Concurseiro";
   const structuredData = {
     "@context": "https://schema.org",
     "@type": tipo === "NOTICIA" ? "NewsArticle" : "Article",
-    headline: conteudo.seoTitulo || conteudo.titulo,
+    headline: conteudo.titulo,
     description: conteudo.seoDescricao || conteudo.resumo,
     datePublished: conteudo.publicadoEm || conteudo.createdAt,
     dateModified: conteudo.updatedAt,
     mainEntityOfPage: articleUrl,
-    author: { "@type": "Organization", name: conteudo.autorNome || "O Concurseiro" },
-    publisher: { "@type": "Organization", name: "O Concurseiro", url: baseUrl },
+    author: {
+      "@type": authorName === "O Concurseiro" ? "Organization" : "Person",
+      name: authorName,
+      url: authorName === "O Concurseiro" ? baseUrl : `${baseUrl}/sobre`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "O Concurseiro",
+      url: baseUrl,
+      logo: { "@type": "ImageObject", url: `${baseUrl}/icon.png` },
+    },
     image: conteudo.imagemCapa ? [conteudo.imagemCapa] : undefined,
+    articleSection: conteudo.categoria || tipoLabel(tipo),
+    keywords: tags,
+    inLanguage: "pt-BR",
+    isAccessibleForFree: true,
   };
   const breadcrumbData = {
     "@context": "https://schema.org",
@@ -208,6 +228,8 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
             ))}
           </div>
         ) : null}
+
+        <ArticleNextStep conteudo={conteudo} />
       </article>
 
       {relacionados.length > 0 ? (

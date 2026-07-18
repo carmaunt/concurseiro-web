@@ -9,7 +9,8 @@ export const metadata: Metadata = {
     default: "O Concurseiro",
     template: "%s | O Concurseiro",
   },
-  description: "Portal do estudante do O Concurseiro.",
+  description:
+    "Filtre questões de concursos e acompanhe acertos, erros e evolução por disciplina para estudar com mais direção.",
   applicationName: "O Concurseiro",
   authors: [{ name: "O Concurseiro" }],
   openGraph: {
