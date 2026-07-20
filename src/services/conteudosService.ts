@@ -163,7 +163,12 @@ export function tipoToPath(tipo: ConteudoTipo) {
 
 export function formatDate(value?: string | null) {
   if (!value) return "Sem data";
-  return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric" }).format(new Date(value));
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    timeZone: "America/Sao_Paulo",
+  }).format(new Date(value));
 }
 
 export function normalizeConteudosPage(data?: ConteudosPage | null): Required<Pick<ConteudosPage, "content">> & {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { normalizeConteudosPage } from "./conteudosService";
+import { formatDate, normalizeConteudosPage } from "./conteudosService";
 
 describe("normalizeConteudosPage", () => {
   it("normaliza páginas no formato da API Spring", () => {
@@ -20,5 +20,11 @@ describe("normalizeConteudosPage", () => {
       first: true,
       last: true,
     });
+  });
+});
+
+describe("formatDate", () => {
+  it("mantém a data editorial no fuso de São Paulo durante a virada em UTC", () => {
+    expect(formatDate("2026-07-20T02:27:02.148605Z")).toBe("19 de jul. de 2026");
   });
 });
