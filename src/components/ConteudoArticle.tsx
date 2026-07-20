@@ -129,6 +129,9 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
   const baseUrl = (process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000").replace(/\/$/, "");
   const articleSlug = canonicalContentSlug(tipo, slug);
   const articleUrl = `${baseUrl}${tipoPath}/${encodeURIComponent(articleSlug)}`;
+  const articleImage = conteudo.imagemCapa?.startsWith("/")
+    ? `${baseUrl}${conteudo.imagemCapa}`
+    : conteudo.imagemCapa;
   const blocosConteudo = renderContent(conteudo.conteudo, conteudo.id);
   const authorName = conteudo.autorNome || "O Concurseiro";
   const structuredData = {
@@ -150,7 +153,7 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
       url: baseUrl,
       logo: { "@type": "ImageObject", url: `${baseUrl}/icon.png` },
     },
-    image: conteudo.imagemCapa ? [conteudo.imagemCapa] : undefined,
+    image: articleImage ? [articleImage] : undefined,
     articleSection: conteudo.categoria || tipoLabel(tipo),
     keywords: tags,
     inLanguage: "pt-BR",
