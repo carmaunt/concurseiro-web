@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { Providers } from "./providers";
 import { WebVitals } from "@/components/WebVitals";
@@ -38,6 +39,18 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-F96CSLPLPV"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-F96CSLPLPV');
+          `}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
