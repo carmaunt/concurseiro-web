@@ -7,6 +7,7 @@ import { GOOGLE_PLAY_URL } from "@/services/store";
 export const metadata: Metadata = {
   title: "Baixar app",
   description: "Baixe o aplicativo O Concurseiro para estudar pelo celular.",
+  alternates: { canonical: "/baixar-app" },
 };
 
 export default function BaixarAppPage() {

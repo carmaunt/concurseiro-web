@@ -5,6 +5,7 @@ import { PublicLayout } from "@/components/PublicLayout";
 export const metadata: Metadata = {
   title: "Notícias",
   description: "Notícias sobre concursos públicos publicadas pelo O Concurseiro.",
+  alternates: { canonical: "/noticias" },
 };
 
 export default function NoticiasPage() {

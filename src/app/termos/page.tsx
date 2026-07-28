@@ -5,6 +5,7 @@ import { InstitutionalPage } from "@/components/InstitutionalPage";
 export const metadata: Metadata = {
   title: "Termos de Uso",
   description: "Conheça as condições de uso do portal e do aplicativo Android O Concurseiro.",
+  alternates: { canonical: "/termos" },
 };
 
 export default function TermosPage() {

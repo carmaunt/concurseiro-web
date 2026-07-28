@@ -5,6 +5,7 @@ import { PublicLayout } from "@/components/PublicLayout";
 export const metadata: Metadata = {
   title: "Blog",
   description: "Dicas de estudo e orientação para preparação de concursos.",
+  alternates: { canonical: "/blog" },
 };
 
 export default function BlogPage() {

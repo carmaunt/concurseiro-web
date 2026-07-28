@@ -5,6 +5,7 @@ import { InstitutionalPage } from "@/components/InstitutionalPage";
 export const metadata: Metadata = {
   title: "Política Editorial",
   description: "Conheça os critérios de fontes, publicação, atualização e correção de conteúdo do O Concurseiro.",
+  alternates: { canonical: "/politica-editorial" },
 };
 
 export default function PoliticaEditorialPage() {

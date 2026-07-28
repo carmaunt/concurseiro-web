@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   title: "Questões e desempenho para concursos",
   description:
     "Filtre questões de concursos e acompanhe acertos, erros e evolução por disciplina para estudar com mais direção.",
+  alternates: { canonical: "/" },
 };
 
 function FeedBlock({ title, conteudos, empty }: { title: string; conteudos: ConteudoPortal[]; empty: string }) {

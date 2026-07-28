@@ -5,6 +5,7 @@ import { PublicLayout } from "@/components/PublicLayout";
 export const metadata: Metadata = {
   title: "Editais previstos",
   description: "Editais previstos acompanhados pelo O Concurseiro.",
+  alternates: { canonical: "/editais-previstos" },
 };
 
 export default function EditaisPrevistosPage() {

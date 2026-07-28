@@ -7,6 +7,7 @@ const supportEmail = "carmaunt@gmail.com";
 export const metadata: Metadata = {
   title: "Contato e suporte",
   description: "Fale com o suporte do O Concurseiro sobre sua conta, privacidade, conteúdo ou problemas técnicos.",
+  alternates: { canonical: "/contato" },
 };
 
 export default function ContatoPage() {

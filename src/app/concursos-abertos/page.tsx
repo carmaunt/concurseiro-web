@@ -5,6 +5,7 @@ import { PublicLayout } from "@/components/PublicLayout";
 export const metadata: Metadata = {
   title: "Concursos abertos",
   description: "Concursos abertos publicados pelo O Concurseiro.",
+  alternates: { canonical: "/concursos-abertos" },
 };
 
 export default function ConcursosAbertosPage() {

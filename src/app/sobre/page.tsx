@@ -5,6 +5,7 @@ import { InstitutionalPage } from "@/components/InstitutionalPage";
 export const metadata: Metadata = {
   title: "Sobre",
   description: "Conheça o propósito e os recursos do O Concurseiro.",
+  alternates: { canonical: "/sobre" },
 };
 
 export default function SobrePage() {

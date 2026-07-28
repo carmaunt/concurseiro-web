@@ -5,6 +5,7 @@ import { InstitutionalPage } from "@/components/InstitutionalPage";
 export const metadata: Metadata = {
   title: "Política de Privacidade",
   description: "Entenda como o O Concurseiro trata dados pessoais no portal e no aplicativo Android.",
+  alternates: { canonical: "/privacidade" },
 };
 
 export default function PrivacidadePage() {
