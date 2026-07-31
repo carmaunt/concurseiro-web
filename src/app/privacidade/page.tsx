@@ -84,9 +84,11 @@ export default function PrivacidadePage() {
 
       <h2>7. Direitos e escolhas</h2>
       <p>
-        O usuário pode solicitar informações, correção ou exclusão de dados pelo canal indicado em{" "}
-        <Link href="/contato">Contato e suporte</Link>. Para uma solicitação sobre conta, pode ser
-        necessário confirmar a titularidade do e-mail usado no login.
+        O usuário pode solicitar informações ou correção pelo canal indicado em{" "}
+        <Link href="/contato">Contato e suporte</Link>. A conta pode ser apagada diretamente no
+        aplicativo ou pelo procedimento descrito em <Link href="/exclusao-de-conta">Exclusão de
+        conta e dados</Link>. Para uma solicitação externa, pode ser necessário confirmar a
+        titularidade do e-mail usado no login.
       </p>
       <p>
         Quando exigido pela legislação aplicável, o aplicativo apresenta opções de consentimento

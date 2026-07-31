@@ -16,7 +16,7 @@ export default function ContatoPage() {
       eyebrow="Ajuda"
       title="Contato e suporte"
       description="Use o canal abaixo para dúvidas sobre conta, privacidade, conteúdo editorial ou funcionamento do produto."
-      updatedAt="16 de julho de 2026"
+      updatedAt="31 de julho de 2026"
     >
       <h2>Canal de atendimento</h2>
       <p>
@@ -37,10 +37,10 @@ export default function ContatoPage() {
 
       <h2>Privacidade e exclusão de conta</h2>
       <p>
-        Para solicitar acesso, correção ou exclusão de dados, escreva pelo mesmo canal usando o
-        assunto <strong>“Privacidade — O Concurseiro”</strong>. Para excluir a conta, informe o
-        e-mail usado no login e confirme expressamente a solicitação. Consulte também nossa{" "}
-        <Link href="/privacidade">Política de Privacidade</Link>.
+        Para solicitar acesso ou correção de dados, escreva pelo mesmo canal usando o assunto
+        <strong> “Privacidade — O Concurseiro”</strong>. Para apagar uma conta e conhecer os dados
+        removidos, siga o procedimento da página <Link href="/exclusao-de-conta">Exclusão de conta
+        e dados</Link>. Consulte também nossa <Link href="/privacidade">Política de Privacidade</Link>.
       </p>
 
       <h2>Correções editoriais</h2>

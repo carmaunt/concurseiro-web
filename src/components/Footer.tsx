@@ -19,6 +19,7 @@ const institutionalLinks = [
   { href: "/sobre", label: "Sobre" },
   { href: "/contato", label: "Contato e suporte" },
   { href: "/privacidade", label: "Política de Privacidade" },
+  { href: "/exclusao-de-conta", label: "Excluir conta" },
   { href: "/termos", label: "Termos de Uso" },
   { href: "/politica-editorial", label: "Política Editorial" },
 ];

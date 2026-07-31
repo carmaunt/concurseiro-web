@@ -14,6 +14,7 @@ const publicRoutes = [
   "/sobre",
   "/contato",
   "/privacidade",
+  "/exclusao-de-conta",
   "/termos",
   "/politica-editorial",
 ];
