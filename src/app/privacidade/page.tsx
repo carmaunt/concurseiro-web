@@ -14,7 +14,7 @@ export default function PrivacidadePage() {
       eyebrow="Transparência"
       title="Política de Privacidade"
       description="Esta política explica quais informações podem ser tratadas no portal e no aplicativo Android O Concurseiro, para quais finalidades e quais escolhas estão disponíveis ao usuário."
-      updatedAt="16 de julho de 2026"
+      updatedAt="30 de julho de 2026"
     >
       <h2>1. Informações tratadas</h2>
       <p>Conforme os recursos utilizados, podemos tratar:</p>
@@ -25,7 +25,11 @@ export default function PrivacidadePage() {
         <li>interações com telas e recursos, de forma vinculada ou anônima conforme o contexto;</li>
         <li>origem da visita, clique para a loja e identificador aleatório de atribuição da instalação, sem nome ou e-mail;</li>
         <li>informações técnicas sobre dispositivo, navegador, desempenho, falhas e travamentos;</li>
-        <li>cookies e identificadores necessários para autenticação, segurança e funcionamento.</li>
+        <li>cookies e identificadores necessários para autenticação, segurança e funcionamento;</li>
+        <li>
+          endereço IP, interações com o aplicativo e anúncios, informações de diagnóstico e
+          identificadores do dispositivo ou da conta tratados pelo Google AdMob.
+        </li>
       </ul>
 
       <h2>2. Finalidades</h2>
@@ -35,16 +39,18 @@ export default function PrivacidadePage() {
         <li>salvar respostas e apresentar histórico, progresso e desempenho;</li>
         <li>oferecer questões, comentários e demais funcionalidades solicitadas;</li>
         <li>detectar abuso, proteger o serviço e solucionar problemas técnicos;</li>
-        <li>entender o uso agregado do produto e aprimorar a experiência.</li>
+        <li>entender o uso agregado do produto e aprimorar a experiência;</li>
+        <li>exibir e medir anúncios e prevenir fraude ou atividade publicitária inválida.</li>
       </ul>
 
       <h2>3. Serviços de terceiros</h2>
       <p>
-        O aplicativo utiliza serviços Google/Firebase, incluindo Firebase Authentication,
-        Firebase Analytics e Firebase Crashlytics. O portal e a API também dependem de provedores
-        de hospedagem e infraestrutura necessários à entrega e à segurança do serviço. Esses
-        provedores podem tratar dados conforme suas próprias políticas e as instruções aplicáveis
-        à prestação do serviço.
+        O aplicativo utiliza serviços Google, incluindo Google AdMob, Google Mobile Ads SDK,
+        Firebase Authentication, Firebase Analytics e Firebase Crashlytics. O AdMob pode coletar
+        e compartilhar automaticamente endereço IP, interações com o produto, informações de
+        diagnóstico e identificadores do dispositivo ou da conta para publicidade, análise e
+        prevenção de fraude. O portal e a API também dependem de provedores de hospedagem e
+        infraestrutura necessários à entrega e à segurança do serviço.
       </p>
       <p>
         Consulte a{" "}
@@ -55,10 +61,10 @@ export default function PrivacidadePage() {
 
       <h2>4. Compartilhamento e venda</h2>
       <p>
-        O O Concurseiro não vende dados pessoais. Informações podem ser processadas por fornecedores
-        indispensáveis ao funcionamento, à autenticação, à análise de estabilidade e à hospedagem,
-        ou compartilhadas quando houver obrigação legal ou necessidade de proteger direitos e a
-        segurança do serviço.
+        O O Concurseiro não vende dados pessoais. Informações podem ser processadas ou compartilhadas
+        com fornecedores indispensáveis ao funcionamento, à autenticação, à publicidade, à medição,
+        à análise de estabilidade e à hospedagem, ou quando houver obrigação legal ou necessidade de
+        proteger direitos e a segurança do serviço.
       </p>
 
       <h2>5. Armazenamento e segurança</h2>
@@ -81,6 +87,11 @@ export default function PrivacidadePage() {
         O usuário pode solicitar informações, correção ou exclusão de dados pelo canal indicado em{" "}
         <Link href="/contato">Contato e suporte</Link>. Para uma solicitação sobre conta, pode ser
         necessário confirmar a titularidade do e-mail usado no login.
+      </p>
+      <p>
+        Quando exigido pela legislação aplicável, o aplicativo apresenta opções de consentimento
+        para anúncios personalizados ou contextuais. As escolhas disponíveis podem ser revistas na
+        tela “Privacidade e dados” do aplicativo.
       </p>
 
       <h2>8. Crianças e adolescentes</h2>
