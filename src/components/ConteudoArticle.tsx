@@ -6,7 +6,13 @@ import { CoverImage } from "./CoverImage";
 import { EditorialCompactCard } from "./EditorialCards";
 import { PublicLayout } from "./PublicLayout";
 import { canonicalContentSlug, contentLookupSlugs } from "@/services/contentAliases";
-import { buscarConteudoPublicadoComFallback, formatDate, listarConteudosPublicos, tipoToPath } from "@/services/conteudosService";
+import {
+  buscarConteudoPublicadoComFallback,
+  formatDate,
+  listarConteudosPublicos,
+  listarConteudosPublicosPage,
+  tipoToPath,
+} from "@/services/conteudosService";
 import { excludeContent, normalizeContent, splitTags, tipoLabel } from "@/services/editorial";
 import type { ConteudoTipo } from "@/types/conteudos";
 import styles from "./ConteudoArticle.module.css";
@@ -116,15 +122,27 @@ function renderContent(content: string, id: number) {
 }
 
 export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug: string }) {
-  const [conteudo, relacionadosBase] = await Promise.all([
-    buscarConteudoPublicadoComFallback(tipo, contentLookupSlugs(tipo, slug)),
-    listarConteudosPublicos(tipo, 4),
-  ]);
+  const conteudo = await buscarConteudoPublicadoComFallback(tipo, contentLookupSlugs(tipo, slug));
 
   if (!conteudo) notFound();
 
   const tags = splitTags(conteudo.tags);
-  const relacionados = excludeContent(relacionadosBase, conteudo).slice(0, 3);
+  const firstTag = Array.isArray(conteudo.tags) ? conteudo.tags[0] : undefined;
+  const taxonomyRelated = firstTag?.slug || conteudo.category?.slug
+    ? await listarConteudosPublicosPage({
+        tipo,
+        tag: firstTag?.slug,
+        category: firstTag ? undefined : conteudo.category?.slug,
+        size: 4,
+      })
+    : null;
+  const taxonomyItems = excludeContent(taxonomyRelated?.content ?? [], conteudo);
+  const recentItems = taxonomyItems.length >= 3
+    ? []
+    : excludeContent(await listarConteudosPublicos(tipo, 6), conteudo);
+  const relacionados = Array.from(
+    new Map([...taxonomyItems, ...recentItems].map((item) => [item.id, item])).values(),
+  ).slice(0, 3);
   const tipoPath = tipoToPath(tipo);
   const baseUrl = (process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000").replace(/\/$/, "");
   const articleSlug = canonicalContentSlug(tipo, slug);
@@ -134,28 +152,29 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
     : conteudo.imagemCapa;
   const blocosConteudo = renderContent(conteudo.conteudo, conteudo.id);
   const authorName = conteudo.autorNome || "O Concurseiro";
+  const publishedAt = conteudo.publicadoEm || conteudo.createdAt;
+  const publishedTimestamp = new Date(publishedAt).getTime();
+  const updatedTimestamp = new Date(conteudo.updatedAt).getTime();
+  const showUpdatedAt = Number.isFinite(publishedTimestamp)
+    && Number.isFinite(updatedTimestamp)
+    && updatedTimestamp - publishedTimestamp >= 24 * 60 * 60 * 1000;
+  const articleType = tipo === "NOTICIA" ? "NewsArticle" : tipo === "BLOG" ? "BlogPosting" : "Article";
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": tipo === "NOTICIA" ? "NewsArticle" : "Article",
+    "@type": articleType,
     headline: conteudo.titulo,
     description: conteudo.seoDescricao || conteudo.resumo,
-    datePublished: conteudo.publicadoEm || conteudo.createdAt,
+    datePublished: publishedAt,
     dateModified: conteudo.updatedAt,
-    mainEntityOfPage: articleUrl,
-    author: {
-      "@type": authorName === "O Concurseiro" ? "Organization" : "Person",
-      name: authorName,
-      url: authorName === "O Concurseiro" ? baseUrl : `${baseUrl}/sobre`,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "O Concurseiro",
-      url: baseUrl,
-      logo: { "@type": "ImageObject", url: `${baseUrl}/icon.png` },
-    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+    author: authorName === "O Concurseiro"
+      ? { "@id": `${baseUrl}/#organization` }
+      : { "@type": "Person", name: authorName, url: `${baseUrl}/sobre` },
+    publisher: { "@id": `${baseUrl}/#organization` },
     image: articleImage ? [articleImage] : undefined,
     articleSection: conteudo.categoria || tipoLabel(tipo),
     keywords: tags,
+    citation: conteudo.fontesOficiais?.map((fonte) => fonte.url),
     inLanguage: "pt-BR",
     isAccessibleForFree: true,
   };
@@ -195,9 +214,12 @@ export async function ConteudoArticle({ tipo, slug }: { tipo: ConteudoTipo; slug
           </div>
           <h1>{conteudo.titulo}</h1>
           <p>{conteudo.resumo}</p>
-          <time dateTime={conteudo.publicadoEm || conteudo.updatedAt}>
-            {formatDate(conteudo.publicadoEm || conteudo.updatedAt)}
-          </time>
+          <div className={styles.dates}>
+            <time dateTime={publishedAt}>Publicado em {formatDate(publishedAt)}</time>
+            {showUpdatedAt ? (
+              <time dateTime={conteudo.updatedAt}>Atualizado em {formatDate(conteudo.updatedAt)}</time>
+            ) : null}
+          </div>
         </div>
 
         <CoverImage src={conteudo.imagemCapa} alt={conteudo.imagemCapaAlt || conteudo.titulo} priority variant="article" />

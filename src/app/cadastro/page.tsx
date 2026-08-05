@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { PublicLayout } from "@/components/PublicLayout";
 import { getApiErrorMessage } from "@/services/api";
 import { register } from "@/services/authService";
+import { trackSignupCompleted, trackSignupStarted } from "@/services/productAnalytics";
 import styles from "../login/auth.module.css";
 
 export default function CadastroPage() {
@@ -17,6 +18,13 @@ export default function CadastroPage() {
   const [senha, setSenha] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const signupStartedTracked = useRef(false);
+
+  function trackFirstInteraction() {
+    if (signupStartedTracked.current) return;
+    signupStartedTracked.current = true;
+    trackSignupStarted();
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -25,6 +33,7 @@ export default function CadastroPage() {
 
     try {
       await register({ nome, email, senha });
+      trackSignupCompleted();
       router.push("/login");
     } catch (err) {
       setError(getApiErrorMessage(err, "Não foi possível criar a conta."));
@@ -41,7 +50,7 @@ export default function CadastroPage() {
           <p className="muted">
             Use uma senha com letra maiúscula, minúscula, número e símbolo.
           </p>
-          <form className="form" onSubmit={handleSubmit}>
+          <form className="form" onFocusCapture={trackFirstInteraction} onSubmit={handleSubmit}>
             <label className="field">
               <span className="label">Nome</span>
               <input

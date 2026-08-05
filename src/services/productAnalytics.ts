@@ -7,6 +7,16 @@ let fallbackVisitorId: string | null = null;
 let fallbackAcquisitionId: string | null = null;
 
 type EventMetadata = Record<string, string | number | boolean>;
+type ProductEventName =
+  | "portal_landing_viewed"
+  | "store_cta_clicked"
+  | "sample_started"
+  | "sample_completed"
+  | "signup_started"
+  | "signup_completed";
+type AnalyticsWindow = Window & {
+  gtag?: (command: "event", eventName: string, metadata: EventMetadata) => void;
+};
 
 function opaqueId(prefix: string) {
   const value = globalThis.crypto?.randomUUID?.()
@@ -77,7 +87,7 @@ export function buildAttributedGooglePlayUrl(baseUrl: string, ctaId: string) {
 }
 
 export function trackProductEvent(
-  eventName: "portal_landing_viewed" | "store_cta_clicked",
+  eventName: ProductEventName,
   metadata: EventMetadata = {},
 ) {
   const context = getProductAnalyticsContext();
@@ -96,6 +106,14 @@ export function trackProductEvent(
       acquisition_id: context.acquisitionId,
     },
   };
+
+  const gtag = (window as AnalyticsWindow).gtag;
+  if (typeof gtag === "function") {
+    const gtagMetadata = Object.fromEntries(
+      Object.entries(body.metadata).filter(([key]) => key !== "acquisition_id"),
+    ) as EventMetadata;
+    gtag("event", eventName, gtagMetadata);
+  }
 
   void fetch(EVENT_ENDPOINT, {
     method: "POST",
@@ -141,4 +159,58 @@ export function trackStoreClick(ctaId: string) {
     cta_id: ctaId.slice(0, 80),
     store: "google_play",
   });
+}
+
+function conversionOriginMetadata() {
+  if (typeof window === "undefined") return {};
+  const search = new URLSearchParams(window.location.search);
+  const fields = ["origem", "tipo", "conteudo", "via"] as const;
+
+  return Object.fromEntries(
+    fields.flatMap((field) => {
+      const value = safeCampaignValue(search.get(field));
+      return value ? [[field, value]] : [];
+    }),
+  );
+}
+
+export function trackSampleStarted(sampleSize: number) {
+  trackProductEvent("sample_started", {
+    sample_size: sampleSize,
+    ...conversionOriginMetadata(),
+  });
+}
+
+export function trackSampleCompleted(sampleSize: number, correctAnswers: number) {
+  trackProductEvent("sample_completed", {
+    sample_size: sampleSize,
+    correct_answers: correctAnswers,
+    accuracy_percent: sampleSize > 0 ? Math.round((correctAnswers / sampleSize) * 100) : 0,
+    ...conversionOriginMetadata(),
+  });
+}
+
+export function buildInternalAttributionPath(
+  path: string,
+  metadata: Partial<Record<"origem" | "tipo" | "conteudo" | "via", string>> = {},
+) {
+  if (typeof window === "undefined") return path;
+
+  const current = new URLSearchParams(window.location.search);
+  const attributed = new URLSearchParams();
+  for (const field of ["origem", "tipo", "conteudo", "via"] as const) {
+    const value = safeCampaignValue(metadata[field] ?? current.get(field));
+    if (value) attributed.set(field, value);
+  }
+
+  const query = attributed.toString();
+  return query ? `${path}?${query}` : path;
+}
+
+export function trackSignupStarted() {
+  trackProductEvent("signup_started", conversionOriginMetadata());
+}
+
+export function trackSignupCompleted() {
+  trackProductEvent("signup_completed", conversionOriginMetadata());
 }

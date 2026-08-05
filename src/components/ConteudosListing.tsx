@@ -11,6 +11,7 @@ import { getApiErrorMessage } from "@/services/api";
 import {
   listarConteudosPublicosPageClient,
   listarTaxonomiasPublicasClient,
+  normalizeConteudosPage,
 } from "@/services/conteudosService";
 import { pluralizeSearchResults } from "@/services/editorial";
 import type { ConteudoTipo, TaxonomiaResumo } from "@/types/conteudos";
@@ -36,6 +37,8 @@ export function ConteudosListing({
   emptyTitle,
   emptyDescription,
   searchPlaceholder,
+  initialData,
+  initialTaxonomies,
 }: {
   title: string;
   description: string;
@@ -43,6 +46,8 @@ export function ConteudosListing({
   emptyTitle: string;
   emptyDescription: string;
   searchPlaceholder: string;
+  initialData?: ReturnType<typeof normalizeConteudosPage>;
+  initialTaxonomies?: { categorias: TaxonomiaResumo[]; tags: TaxonomiaResumo[] };
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -92,12 +97,14 @@ export function ConteudosListing({
       page: currentPage - 1,
       size: PAGE_SIZE,
     }),
+    initialData,
     placeholderData: (previous) => previous,
   });
 
   const taxonomiasQuery = useQuery({
     queryKey: ["taxonomias-publicas", tipo],
     queryFn: () => listarTaxonomiasPublicasClient(tipo),
+    initialData: initialTaxonomies,
     staleTime: 5 * 60 * 1000,
   });
 

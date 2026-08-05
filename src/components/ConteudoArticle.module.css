@@ -49,6 +49,12 @@
   font-weight: 700;
 }
 
+.dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+
 .kicker {
   display: flex;
   align-items: center;

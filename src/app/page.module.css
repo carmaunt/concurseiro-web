@@ -148,6 +148,13 @@
   margin-top: 24px;
 }
 
+.productActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
 .productBenefit {
   min-height: 190px;
   padding: 22px;
@@ -309,6 +316,11 @@
 
   .productSection {
     padding: 32px 0 28px;
+  }
+
+  .productActions {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .productBenefit {

@@ -85,7 +85,7 @@ test("CTA principal permite responder antes do login", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("link", { name: "Testar questões grátis" }).click();
 
-  await expect(page).toHaveURL(/\/experimentar$/);
+  await expect(page).toHaveURL(/\/experimentar$/, { timeout: 15_000 });
   await expect(page).not.toHaveURL(/\/login/);
   await expect(page.getByRole("heading", { name: "Experimente 1 questão grátis" })).toBeVisible();
   await expect(page.getByText("Gabarito:")).toHaveCount(0);

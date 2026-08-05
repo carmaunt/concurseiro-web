@@ -22,7 +22,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title,
     description,
     alternates: { canonical: url },
-    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,

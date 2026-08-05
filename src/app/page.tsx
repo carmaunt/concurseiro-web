@@ -146,6 +146,10 @@ export default async function Home() {
             <p>Use seu histórico de acertos e erros para identificar as disciplinas que pedem atenção.</p>
           </Card>
         </div>
+        <div className={styles.productActions}>
+          <Button href="/questoes-de-concursos" variant="secondary">Conhecer questões e filtros</Button>
+          <Button href="/experimentar">Resolver 5 questões grátis</Button>
+        </div>
       </section>
 
       <ProductProof />

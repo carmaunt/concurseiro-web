@@ -24,6 +24,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     images: ["/opengraph-image"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: "/icon.png",
     shortcut: "/icon.png",
@@ -36,6 +47,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const baseUrl = (process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000").replace(/\/$/, "");
+  const organizationId = `${baseUrl}/#organization`;
+  const websiteId = `${baseUrl}/#website`;
+
   return (
     <html lang="pt-br">
       <body>
@@ -56,9 +71,27 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "O Concurseiro",
-              url: process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": organizationId,
+                  name: "O Concurseiro",
+                  url: baseUrl,
+                  logo: {
+                    "@type": "ImageObject",
+                    url: `${baseUrl}/icon.png`,
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": websiteId,
+                  name: "O Concurseiro",
+                  alternateName: "Portal O Concurseiro",
+                  url: baseUrl,
+                  inLanguage: "pt-BR",
+                  publisher: { "@id": organizationId },
+                },
+              ],
             }).replace(/</g, "\\u003c"),
           }}
         />

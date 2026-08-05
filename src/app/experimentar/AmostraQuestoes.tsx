@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/Badge";
 import { Button } from "@/components/Button";
@@ -11,6 +11,11 @@ import { MarkdownText } from "@/components/MarkdownText";
 import { possuiTextoApoio, TextoApoio } from "@/components/TextoApoio";
 import { alternativasCertoErrado, parseAlternativas } from "@/services/alternativas";
 import { getApiErrorMessage } from "@/services/api";
+import {
+  buildInternalAttributionPath,
+  trackSampleCompleted,
+  trackSampleStarted,
+} from "@/services/productAnalytics";
 import { listarAmostraQuestoes, responderQuestaoAmostra } from "@/services/questoesService";
 import type { RespostaQuestaoAmostra } from "@/types/questoes";
 import styles from "./experimentar.module.css";
@@ -22,6 +27,7 @@ export function AmostraQuestoes() {
   const [selecionada, setSelecionada] = useState("");
   const [resultados, setResultados] = useState<RespostaQuestaoAmostra[]>([]);
   const [concluida, setConcluida] = useState(false);
+  const startedTracked = useRef(false);
 
   const questoesQuery = useQuery({
     queryKey: ["questoes", "amostra", SAMPLE_SIZE],
@@ -53,8 +59,15 @@ export function AmostraQuestoes() {
 
   const acertos = resultados.filter((item) => item.acertou).length;
 
+  useEffect(() => {
+    if (questoes.length === 0 || startedTracked.current) return;
+    startedTracked.current = true;
+    trackSampleStarted(questoes.length);
+  }, [questoes.length]);
+
   function avancar() {
     if (indice + 1 >= questoes.length) {
+      trackSampleCompleted(questoes.length, acertos);
       setConcluida(true);
       return;
     }
@@ -110,6 +123,7 @@ export function AmostraQuestoes() {
 
   if (concluida) {
     const aproveitamento = Math.round((acertos / questoes.length) * 100);
+    const signupHref = buildInternalAttributionPath("/cadastro", { via: "amostra" });
 
     return (
       <section className={`container ${styles.section}`}>
@@ -125,7 +139,7 @@ export function AmostraQuestoes() {
             guardar seu histórico de desempenho.
           </p>
           <div className={styles.summaryActions}>
-            <Button href="/cadastro">Criar conta e salvar progresso</Button>
+            <Button href={signupHref}>Criar conta e salvar progresso</Button>
             <Button type="button" variant="secondary" onClick={reiniciar}>
               Refazer amostra
             </Button>

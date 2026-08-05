@@ -2,6 +2,7 @@ import Link from "next/link";
 import styles from "./Footer.module.css";
 
 const productLinks = [
+  { href: "/questoes-de-concursos", label: "Questões de concursos" },
   { href: "/experimentar", label: "Testar questões" },
   { href: "/cadastro", label: "Criar conta" },
   { href: "/baixar-app", label: "Baixar app" },

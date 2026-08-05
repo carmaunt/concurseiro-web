@@ -11,7 +11,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const conteudo = await buscarConteudoPublicado("EDITAL_PREVISTO", slug);
   const title = conteudo?.seoTitulo || conteudo?.titulo || "Edital previsto";
   const description = conteudo?.seoDescricao || conteudo?.resumo || "Edital previsto no O Concurseiro.";
-  const url = `${process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000"}/editais-previstos/${slug}`;
+  const baseUrl = (process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000").replace(/\/$/, "");
+  const url = `${baseUrl}/editais-previstos/${encodeURIComponent(slug)}`;
+  const image = conteudo?.imagemCapa
+    ? [{ url: conteudo.imagemCapa, alt: conteudo.imagemCapaAlt || conteudo.titulo }]
+    : undefined;
 
   return {
     title,
@@ -22,7 +26,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description,
       url,
       type: "article",
-      images: conteudo?.imagemCapa ? [{ url: conteudo.imagemCapa }] : undefined,
+      publishedTime: conteudo?.publicadoEm || conteudo?.createdAt,
+      modifiedTime: conteudo?.updatedAt,
+      authors: [conteudo?.autorNome || "O Concurseiro"],
+      images: image,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: conteudo?.imagemCapa ? [conteudo.imagemCapa] : undefined,
     },
   };
 }

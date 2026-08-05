@@ -1,5 +1,29 @@
 import type { ConteudoPortal, ConteudoTipo } from "@/types/conteudos";
 
+export type EditorialUrlSearchParams = Record<string, string | string[] | undefined>;
+
+function firstParam(value: string | string[] | undefined) {
+  return (Array.isArray(value) ? value[0] : value)?.trim() ?? "";
+}
+
+export function parseEditorialUrlParams(params: EditorialUrlSearchParams) {
+  const search = firstParam(params.search);
+  const category = firstParam(params.category);
+  const tag = firstParam(params.tag);
+  const rawPage = firstParam(params.page);
+  const parsedPage = Number(rawPage || "1");
+  const displayPage = Number.isInteger(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+
+  return {
+    search,
+    category,
+    tag,
+    displayPage,
+    pageIndex: displayPage - 1,
+    shouldNoIndex: Boolean(search || category || tag || rawPage),
+  };
+}
+
 export function pluralizePublications(count: number) {
   return count === 1 ? "1 publicação" : `${count} publicações`;
 }

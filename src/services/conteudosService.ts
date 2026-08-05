@@ -132,6 +132,18 @@ export async function listarTaxonomiasPublicasClient(tipo: ConteudoTipo) {
   };
 }
 
+export async function listarTaxonomiasPublicas(tipo: ConteudoTipo) {
+  const [categorias, tags] = await Promise.all([
+    apiFetch<TaxonomiaResumo[]>(`/api/v1/categorias/publicas?tipo=${tipo}`, [`categorias-${tipo}`]),
+    apiFetch<TaxonomiaResumo[]>(`/api/v1/tags/publicas?tipo=${tipo}`, [`tags-${tipo}`]),
+  ]);
+
+  return {
+    categorias: categorias ?? [],
+    tags: tags ?? [],
+  };
+}
+
 export async function listarDestaques(size = 5) {
   const data = await apiFetch<ConteudosPage>(`/api/v1/conteudos/destaques?page=0&size=${size}`);
   return data?.content ?? [];

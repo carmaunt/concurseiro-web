@@ -33,6 +33,8 @@ describe("ArticleNextStep", () => {
     expect(link.getAttribute("href")).toContain("/experimentar?");
     expect(link.getAttribute("href")).toContain(`tipo=${tipo.toLowerCase()}`);
     expect(screen.getByText(/5 questões variadas do acervo/)).not.toBeNull();
+    expect(screen.getByRole("link", { name: /praticar por questões|recursos para praticar|questões e filtros|planejar com questões/i })
+      .getAttribute("href")).toBe("/questoes-de-concursos");
 
     unmount();
   });

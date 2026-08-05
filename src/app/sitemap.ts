@@ -6,6 +6,8 @@ import type { ConteudoTipo } from "@/types/conteudos";
 
 const publicRoutes = [
   "",
+  "/questoes-de-concursos",
+  "/experimentar",
   "/noticias",
   "/blog",
   "/concursos-abertos",
@@ -27,7 +29,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticEntries: MetadataRoute.Sitemap = publicRoutes.map((route) => ({
     url: `${baseUrl}${route}`,
     changeFrequency: route === "" ? "daily" : "weekly",
-    priority: route === "" ? 1 : 0.7,
+    priority: route === ""
+      ? 1
+      : route === "/questoes-de-concursos"
+        ? 0.95
+        : route === "/experimentar"
+          ? 0.85
+          : 0.7,
   }));
 
   const contentByType = await Promise.all(contentTypes.map(listarConteudosParaSitemap));

@@ -9,6 +9,7 @@ type CtaContent = {
   title: string;
   description: (topic: string) => string;
   primaryLabel: string;
+  pillarLabel: string;
 };
 
 const ctaByType: Record<ConteudoTipo, CtaContent> = {
@@ -17,24 +18,28 @@ const ctaByType: Record<ConteudoTipo, CtaContent> = {
     description: (topic) =>
       `Agora que você se atualizou sobre “${topic}”, faça um diagnóstico rápido e descubra como está seu ritmo de resolução.`,
     primaryLabel: "Praticar 5 questões grátis",
+    pillarLabel: "Como praticar por questões",
   },
   BLOG: {
     title: "Aplique o que acabou de aprender",
     description: (topic) =>
       `Leve as orientações de “${topic}” para a prática e use o resultado para decidir seu próximo estudo.`,
     primaryLabel: "Testar meu nível grátis",
+    pillarLabel: "Ver recursos para praticar",
   },
   CONCURSO_ABERTO: {
     title: "Dê o primeiro passo para esta oportunidade",
     description: (topic) =>
       `Se “${topic}” está no seu radar, comece medindo seu desempenho em uma sessão curta de questões.`,
     primaryLabel: "Começar diagnóstico grátis",
+    pillarLabel: "Conhecer questões e filtros",
   },
   EDITAL_PREVISTO: {
     title: "Comece antes da publicação do edital",
     description: (topic) =>
       `Enquanto acompanha “${topic}”, antecipe sua preparação com uma primeira sessão de prática.`,
     primaryLabel: "Começar a praticar grátis",
+    pillarLabel: "Planejar com questões",
   },
 };
 
@@ -82,6 +87,9 @@ export function ArticleNextStep({ conteudo }: { conteudo: ConteudoPortal }) {
 
       <div className={styles.actions}>
         <Button href={`/experimentar?${sampleParams.toString()}`}>{config.primaryLabel}</Button>
+        <Link className={styles.relatedLink} href="/questoes-de-concursos">
+          {config.pillarLabel}
+        </Link>
         <Link
           className={styles.relatedLink}
           href={relatedParams ? `${listingPath}?${relatedParams.toString()}` : listingPath}

@@ -11,7 +11,7 @@ import styles from "./Header.module.css";
 
 const publicLinks = [
   { href: "/", label: "Início" },
-  { href: "/questoes", label: "Questões" },
+  { href: "/questoes-de-concursos", label: "Questões" },
   { href: "/concursos", label: "Guias" },
   { href: "/noticias", label: "Notícias" },
   { href: "/blog", label: "Blog" },
